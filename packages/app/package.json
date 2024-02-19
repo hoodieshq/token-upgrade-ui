@@ -1,0 +1,35 @@
+{
+  "name": "@solana/token-upgrade-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "keywords": ["next"],
+  "license": "Apache-2.0",
+  "author": "",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "pnpm run lint-next && pnpm run lint-pret",
+    "lint-fix": "pnpm run lint-pret --w",
+    "lint-next": "next lint",
+    "lint-pret": "prettier ./src/** ./**/*config.[jt]s --check",
+    "start": "next start",
+    "test": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
