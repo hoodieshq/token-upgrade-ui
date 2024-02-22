@@ -1,6 +1,7 @@
-import React, { FC, ReactNode } from "react"
-console.log(345345)
+import React, { FC, ReactHTML } from "react"
 
-export default () => {
-  return <div>123</div>
+const Header: FC<Parameters<ReactHTML["header"]>[0]> = (props) => {
+  return <header {...props}>Header</header>
 }
+
+export default Header

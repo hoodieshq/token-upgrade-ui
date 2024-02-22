@@ -1,51 +1,7 @@
-//import Header from "../../widgets/header"
+import Header from "../../widgets/header"
+import type { StoryObj } from "@storybook/react"
+import { expect, within } from "@storybook/test"
 
-import React, { FC, ButtonHTMLAttributes } from "react"
-import PropTypes from "prop-types"
-
-/**
- * Primary UI component for user interaction
- */
-const Header = (props) => {
-  //const Header: FC<ButtonHTMLAttributes<any>> = (props) => {
-  return (
-    <button type="button" className={["storybook-button"].join(" ")} {...props}>
-      {props.children}
-    </button>
-  )
-}
-
-Header.propTypes = {
-  /**
-   * Is this the principal call to action on the page?
-   */
-  //primary: PropTypes.bool,
-  /**
-   * What background color to use
-   */
-  //backgroundColor: PropTypes.string,
-  /**
-   * How large should the button be?
-   */
-  //size: PropTypes.oneOf(["small", "medium", "large"]),
-  /**
-   * Header contents
-   */
-  //label: PropTypes.string.isRequired,
-  /**
-   * Optional click handler
-   */
-  onClick: PropTypes.func,
-}
-
-Header.defaultProps = {
-  //backgroundColor: null,
-  //primary: false,
-  //size: "medium",
-  onClick: undefined,
-}
-
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 export default {
   title: "UI/Header",
   component: Header,
@@ -59,10 +15,20 @@ export default {
   argTypes: {},
 }
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Primary = {
+type TestIdCmpProps<T> = T & { ["data-testid"]: string }
+
+export const Primary: StoryObj<TestIdCmpProps<Parameters<typeof Header>[0]>> = {
   args: {
-    primary: true,
-    label: "Header",
+    "data-testid": "header",
+  },
+  async play({ canvasElement, step }) {
+    const ctx = within(canvasElement)
+
+    await step("should render", async () => {
+      const h = ctx.getByTestId("header")
+      const el = expect(h)
+      await el.toBeVisible()
+      await el.not.toBeEmptyDOMElement()
+    })
   },
 }
