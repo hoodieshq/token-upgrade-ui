@@ -1,0 +1,4 @@
+.pnp.cjs
+*.sw*
+.turbo
+node_modules
