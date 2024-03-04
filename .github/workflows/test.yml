@@ -52,6 +52,7 @@ jobs:
         run: |
           pnpm lint
           pnpm t
+  # move smoke tests to the separate flow to enable "on" section for them
   smoke:
     name: Smoke
     runs-on: ubuntu-latest
