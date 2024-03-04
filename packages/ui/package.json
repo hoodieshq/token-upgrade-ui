@@ -11,13 +11,13 @@
     "build-storybook": "storybook build",
     "ci:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "ci:sb-kill": "kill -2 $(lsof -t -i:6006)",
-    "ci:test-sb": "wait-on tcp:6006 && pnpm run test-sb && pnpm run ci:sb-kill",
+    "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run ci:sb-kill",
+    "ci:test-smoke": "concurrently -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\" --kill-others-on-fail -s last",
     "lint": "prettier ./src/** ./**/*config.[jt]s --check",
     "lint-fix": "pnpm run lint --w",
     "storybook": "storybook dev -p 6006",
     "test": "tsc --noEmit",
-    "test-sb": "test-storybook --browsers chromium, firefox",
-    "test-smoke": "concurrently --raw \"pnpm run ci:sb\" \"pnpm run ci:test-sb\" --kill-others-on-fail"
+    "test-sb": "test-storybook --browsers chromium, firefox"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
