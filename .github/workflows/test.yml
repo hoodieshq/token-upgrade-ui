@@ -6,10 +6,12 @@ on:
     branches:
       - master
 env:
-  CACHE_AFFIX: pnpm-packages
   CI: true
+  PNPM_CACHE_AFFIX: pnpm-packages
   PNPM_CACHE_FOLDER: .pnpm-store
   PNPM_VERSION: 8
+  PW_CACHE_AFFIX: playwright
+  PW_CACHE_FOLDER: ~/.cache/ms-playwright
 
 jobs:
   common:
@@ -39,9 +41,9 @@ jobs:
         id: packages-cache
         with:
           path: "${{ env.PNPM_CACHE_FOLDER }}"
-          key: ${{ runner.os }}-${{ env.CACHE_AFFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_AFFIX }}-
+            ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
       - name: install dependencies
         run: pnpm install --frozen-lockfile
@@ -77,18 +79,18 @@ jobs:
         id: packages-cache
         with:
           path: "${{ env.PNPM_CACHE_FOLDER }}"
-          key: ${{ runner.os }}-${{ env.CACHE_AFFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_AFFIX }}-
+            ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
       - name: restore playwright cache if applicable
         uses: actions/cache@v3
         id: playwright-cache
         with:
-          path: "~/.cache/ms-playwright"
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: "${{ env.PW_CACHE_FOLDER }}"
+          key: ${{ runner.os }}-${{ env.PW_CACHE_AFFIX }}-${{ hashFiles('**/.browserslistrc') }}
           restore-keys: |
-            ${{ runner.os }}-playwright-
+            ${{ runner.os }}-${{ env.PW_CACHE_AFFIX }}-
 
       - name: install dependencies
         run: |
