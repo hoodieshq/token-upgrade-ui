@@ -81,13 +81,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_AFFIX }}-
 
+      - name: Restore playwright cache
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: .cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps
 
-      - name: Install libraries
-        run: sudo apt-get install -y lsof
+      - name: Build artefacts
+        run: pnpm --filter "@solana/*ui" run build-storybook --quiet
 
       - name: Testing
         run: pnpm --filter "@solana/*ui" run ci:test-smoke
