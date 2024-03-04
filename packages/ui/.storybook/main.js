@@ -20,6 +20,9 @@ const config = {
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@storybook/addon-interactions"),
   ],
+  core: {
+    disableTelemetry: true,
+  },
   framework: {
     name: getAbsolutePath("@storybook/react-webpack5"),
     options: {},

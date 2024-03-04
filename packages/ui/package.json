@@ -17,7 +17,7 @@
     "lint-fix": "pnpm run lint --w",
     "storybook": "storybook dev -p 6006",
     "test": "tsc --noEmit",
-    "test-sb": "test-storybook --browsers chromium, firefox"
+    "test-sb": "test-storybook --browsers chromium"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {

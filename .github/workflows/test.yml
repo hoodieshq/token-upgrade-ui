@@ -1,4 +1,4 @@
-name: Test
+name: TEST
 
 on:
   pull_request:
@@ -12,29 +12,29 @@ env:
   PNPM_VERSION: 8
 
 jobs:
-  test:
-    name: Testing
+  common:
+    name: COMMON
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code repository
+      - name: Checkout code repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: install pnpm package manager
+      - name: Install pnpm package manager
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
-      - name: setup node.js
+      - name: Setup node.js
         uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
 
-      - name: setup pnpm config
+      - name: Setup pnpm config
         run: pnpm config set store-dir $PNPM_CACHE_FOLDER
 
-      - name: restore cache for packages if applicable
+      - name: Restore cache for packages if applicable
         uses: actions/cache@v3
         id: packages-cache
         with:
@@ -43,7 +43,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_AFFIX }}-
 
-      - name: install dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Testing
@@ -51,28 +51,28 @@ jobs:
           pnpm lint
           pnpm t
   smoke:
-    name: Smoke Testing
+    name: SMOKE
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code repository
+      - name: Checkout code repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: install pnpm package manager
+      - name: Install pnpm package manager
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
-      - name: setup node.js
+      - name: Setup node.js
         uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
 
-      - name: setup pnpm config
+      - name: Setup pnpm config
         run: pnpm config set store-dir $PNPM_CACHE_FOLDER
 
-      - name: restore cache for packages if applicable
+      - name: Restore cache for packages if applicable
         uses: actions/cache@v3
         id: packages-cache
         with:
@@ -81,10 +81,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_AFFIX }}-
 
-      - name: install dependencies
+      - name: Install dependencies
         run: |
           pnpm install --frozen-lockfile
-          npx playwright install
+          pnpm exec playwright install --with-deps
+
+      - name: Install libraries
+        run: sudo apt-get install -y lsof
 
       - name: Testing
         run: pnpm --filter "@solana/*ui" run ci:test-smoke
