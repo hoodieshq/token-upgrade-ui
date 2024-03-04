@@ -2,7 +2,7 @@ import Header from "../../widgets/header"
 import type { StoryObj } from "@storybook/react"
 import { expect, within } from "@storybook/test"
 
-export default {
+const headerStory = {
   title: "UI/Header",
   component: Header,
   parameters: {
@@ -14,6 +14,8 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {},
 }
+
+export default headerStory
 
 type TestIdCmpProps<T> = T & { ["data-testid"]: string }
 

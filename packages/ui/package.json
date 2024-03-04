@@ -12,8 +12,10 @@
     "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
     "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb --browsers chromium,firefox",
     "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
-    "lint": "prettier ./src/** ./**/*config.[jt]s --check",
+    "lint": "pnpm run lint-pret && pnpm run lint-es",
+    "lint-es": "eslint ./src",
     "lint-fix": "pnpm run lint --w",
+    "lint-pret": "prettier ./src/** ./**/*config.[jt]s --check",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
     "local:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run local:sb-kill",
@@ -23,6 +25,12 @@
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
+  "eslintConfig": {
+    "extends": "next/core-web-vitals",
+    "rules": {
+      "@next/next/no-html-link-for-pages": "off"
+    }
+  },
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.0",
     "@tailwindcss/forms": "^0.5.7",
