@@ -9,11 +9,18 @@
   "scripts": {
     "build": "pnpm run build-storybook",
     "build-storybook": "storybook build",
+    "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
+    "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb --browsers chromium,firefox",
+    "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
     "lint": "prettier ./src/** ./**/*config.[jt]s --check",
     "lint-fix": "pnpm run lint --w",
+    "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
+    "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
+    "local:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run local:sb-kill",
+    "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
     "test": "tsc --noEmit",
-    "test-sb": "test-storybook --browsers chromium"
+    "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -24,23 +31,26 @@
   "devDependencies": {
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@storybook/addon-a11y": "^7.6.17",
     "@storybook/addon-essentials": "^7.6.16",
     "@storybook/addon-interactions": "^7.6.16",
     "@storybook/addon-links": "^7.6.16",
-    "@storybook/addon-onboarding": "^1.0.11",
     "@storybook/blocks": "^7.6.16",
     "@storybook/react": "^7.6.16",
     "@storybook/react-webpack5": "^7.6.16",
     "@storybook/test": "^7.6.17",
     "@storybook/test-runner": "^0.16.0",
     "@storybook/testing-library": "^0.2.2",
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1",
     "install": "^0.13.0",
     "playwright": "^1.41.2",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "storybook": "^7.6.17"
+    "storybook": "^7.6.17",
+    "wait-on": "^7.2.0"
   }
 }
