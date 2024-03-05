@@ -1,9 +1,11 @@
-import type { Config } from "tailwindcss"
+import defaultTheme from "tailwindcss/defaultTheme"
 import formsPlugin from "@tailwindcss/forms"
 import headlessuiPlugin from "@headlessui/tailwindcss"
+import type { Config } from "tailwindcss"
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: ["class"],
   theme: {
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem" }],
@@ -38,7 +40,7 @@ export default {
         gray: colors.neutral,
       }),
       fontFamily: {
-        sans: "var(--font-inter)",
+        sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
       },
       keyframes: {
         "fade-in": {

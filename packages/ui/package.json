@@ -14,7 +14,7 @@
     "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
     "lint": "pnpm run lint-pret && pnpm run lint-es",
     "lint-es": "eslint ./src",
-    "lint-fix": "pnpm run lint --w",
+    "lint-fix": "pnpm run lint-pret --w",
     "lint-pret": "prettier ./src/** ./**/*config.[jt]s --check",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
@@ -34,6 +34,7 @@
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.0",
     "@tailwindcss/forms": "^0.5.7",
+    "class-variance-authority": "^0.7.0",
     "tailwindcss": "^3.3.0"
   },
   "devDependencies": {
@@ -44,6 +45,7 @@
     "@storybook/addon-essentials": "^7.6.16",
     "@storybook/addon-interactions": "^7.6.16",
     "@storybook/addon-links": "^7.6.16",
+    "@storybook/addon-styling": "^1.3.7",
     "@storybook/blocks": "^7.6.16",
     "@storybook/react": "^7.6.16",
     "@storybook/react-webpack5": "^7.6.16",
@@ -52,6 +54,7 @@
     "@storybook/testing-library": "^0.2.2",
     "axe-playwright": "^2.0.1",
     "concurrently": "^8.2.2",
+    "eslint-plugin-storybook": "^0.8.0",
     "http-server": "^14.1.1",
     "install": "^0.13.0",
     "playwright": "^1.41.2",
