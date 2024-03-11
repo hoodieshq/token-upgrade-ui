@@ -1,0 +1,17 @@
+{
+  "name": "token-upgrade-ui-shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "main": ".",
+  "scripts": {},
+  "dependencies": {
+    "@headlessui/tailwindcss": "^0.2.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}

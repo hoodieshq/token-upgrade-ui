@@ -5,17 +5,19 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "index.js",
+  "main": "./lib",
   "scripts": {
-    "build": "pnpm run build-storybook",
-    "build-storybook": "storybook build",
+    "build": "pnpm run build-package",
+    "build-package": "tsup -d lib --config ./tsup-esm.config.ts",
+    "build-sb": "storybook build",
     "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
     "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb --browsers chromium,firefox",
     "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
+    "dev": "pnpm run build-package --watch src",
     "lint": "pnpm run lint-pret && pnpm run lint-es",
     "lint-es": "eslint ./src",
     "lint-fix": "pnpm run lint-pret --w",
-    "lint-pret": "prettier ./src/** ./**/*config.[jt]s --check",
+    "lint-pret": "prettier ./src/** --check",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
     "local:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run local:sb-kill",
@@ -32,10 +34,8 @@
     }
   },
   "dependencies": {
-    "@headlessui/tailwindcss": "^0.2.0",
-    "@tailwindcss/forms": "^0.5.7",
     "class-variance-authority": "^0.7.0",
-    "tailwindcss": "^3.3.0"
+    "token-upgrade-ui-shared": "1.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.9",
@@ -63,6 +63,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
+    "tsup": "^8.0.2",
     "wait-on": "^7.2.0"
   }
 }

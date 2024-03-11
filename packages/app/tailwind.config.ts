@@ -1,13 +1,12 @@
-import type { Config } from "tailwindcss";
+import { Config } from "tailwindcss"
+import tokenUpgradePreset from "token-upgrade-ui-shared/tailwind.config.ts"
 
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
-export default config;
+  presets: [tokenUpgradePreset],
+}
+
+export default config
