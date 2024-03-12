@@ -1,10 +1,10 @@
-//import Image from "next/image";
-import { Header } from "../widgets/header"
+import { Pattern } from "../shared/pattern"
 
-export default function Home() {
+export default function Home(props) {
+  console.log({props})
   return (
     <>
-      <Header />
+      <Pattern />
       <main className="flex-auto"></main>
     </>
   )
