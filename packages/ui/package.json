@@ -5,7 +5,7 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "./lib",
+  "main": "./lib/index.esm.mjs",
   "scripts": {
     "build": "pnpm run build-package",
     "build-package": "tsup -d lib --config ./tsup-esm.config.ts",

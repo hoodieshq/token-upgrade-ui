@@ -3,9 +3,6 @@ import Link from "next/link"
 import clsx from "clsx"
 import { motion, useScroll, useTransform } from "framer-motion"
 
-import { Button } from "../shared/button-2"
-import { Logo } from "../shared/logo-2"
-
 function TopLevelNavItem({
   href,
   children,
@@ -30,14 +27,14 @@ export const Header = forwardRef<
   { className?: string }
 >(function Header({ className }, ref) {
   let { isOpen: mobileNavIsOpen } = { isOpen: false }
-  let isInsideMobileNavigation = false
+  let isInsideMobileNavigation = false //useIsInsideMobileNavigation()
 
-  //let { scrollY } = useScroll()
-  let bgOpacityLight = 1 //useTransform(scrollY, [0, 72], [0.5, 0.9])
-  let bgOpacityDark = 0 //useTransform(scrollY, [0, 72], [0.2, 0.8])
+  let { scrollY } = useScroll()
+  let bgOpacityLight = useTransform(scrollY, [0, 72], [0.5, 0.9])
+  let bgOpacityDark = useTransform(scrollY, [0, 72], [0.2, 0.8])
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className={clsx(
         className,
@@ -62,18 +59,13 @@ export const Header = forwardRef<
             "bg-zinc-900/7.5 dark:bg-white/7.5",
         )}
       />
-      Search
-      <div className="flex items-center gap-5 lg:hidden">MobileNavigation</div>
+      <div className="flex items-center gap-5 lg:hidden"></div>
       <div className="flex items-center gap-5">
-        <nav className="hidden md:block">
-          <ul role="list" className="flex items-center gap-8"></ul>
-        </nav>
-        <div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />
-        <div className="flex gap-4">MobileSearch</div>
-        <div className="hidden min-[416px]:contents">
-          <Button href="#">Sign in</Button>
+        <div className="flex gap-4">{}</div>
+        <div className="hidden min-[320px]:contents">
+          Wallet connect
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 })

@@ -1,1 +1,1 @@
-export {}
+export { TokenUpgrade } from "./token-upgrade"

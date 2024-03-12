@@ -1,11 +1,13 @@
 import { Pattern } from "../shared/pattern"
+import { TokenUpgrade } from "@solana/token-upgrade-ui"
 
-export default function Home(props) {
-  console.log({props})
+export default function Home() {
   return (
     <>
       <Pattern />
-      <main className="flex-auto"></main>
+      <p className="not-lead">
+        <TokenUpgrade />
+      </p>
     </>
   )
 }
