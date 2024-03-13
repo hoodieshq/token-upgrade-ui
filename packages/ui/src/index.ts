@@ -1,1 +1,1 @@
-export { TokenUpgrade } from "./token-upgrade"
+export { TokenUpgrade } from "./widgets/token-upgrade"

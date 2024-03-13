@@ -6,6 +6,13 @@
   "license": "Apache-2.0",
   "author": "",
   "main": "./lib/index.esm.mjs",
+  "exports": {
+    "./index.css": "./lib/index.esm.css",
+    ".": {
+      "types": "./lib/index.esm.d.mts",
+      "import": "./lib/index.esm.mjs"
+    }
+  },
   "scripts": {
     "build": "pnpm run build-package",
     "build-package": "tsup -d lib --config ./tsup-esm.config.ts",
