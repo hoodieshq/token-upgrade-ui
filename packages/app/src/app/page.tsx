@@ -5,9 +5,11 @@ export default function Home() {
   return (
     <>
       <Pattern />
-      <p className="not-lead">
-        <TokenUpgrade />
-      </p>
+      <div className="prose p-2 dark:prose-invert">
+        <div className="container flex justify-center">
+          <TokenUpgrade />
+        </div>
+      </div>
     </>
   )
 }
