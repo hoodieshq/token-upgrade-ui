@@ -7,7 +7,7 @@ import typographyPlugin from "@tailwindcss/typography"
 const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@solana/token-upgrade-ui/lib/index.esm.css"
+    "./node_modules/@solana/token-upgrade-ui/lib/index.esm.css",
   ],
   presets: [preset],
   theme: {
