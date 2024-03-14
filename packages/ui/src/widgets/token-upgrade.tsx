@@ -24,8 +24,7 @@ export function TokenUpgrade() {
         <Container>
           <div>
             <TextField label="amount"></TextField>
-
-</div>
+          </div>
           <div>Optional Destination</div>
           <UpgradeButton />
         </Container>

@@ -21,7 +21,7 @@ export function TextField({
   type = "text",
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"input"> & { label?: string, id?: string }) {
+}: React.ComponentPropsWithoutRef<"input"> & { label?: string; id?: string }) {
   return (
     <div className={className}>
       {label && <Label id={id}>{label}</Label>}
@@ -35,7 +35,7 @@ export function SelectField({
   label,
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"select"> & { label?: string, id?: string }) {
+}: React.ComponentPropsWithoutRef<"select"> & { label?: string; id?: string }) {
   return (
     <div className={className}>
       {label && <Label id={id}>{label}</Label>}
