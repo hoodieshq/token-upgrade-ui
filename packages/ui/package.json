@@ -18,7 +18,7 @@
     "build-package": "tsup -d lib --config ./tsup-esm.config.ts",
     "build-sb": "storybook build",
     "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
-    "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb --browsers chromium,firefox",
+    "ci:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb --browsers chromium,firefox",
     "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
     "dev": "pnpm run build-package --watch src",
     "lint": "pnpm run lint-pret && pnpm run lint-es",
