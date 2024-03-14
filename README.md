@@ -1,5 +1,7 @@
 # token-upgrade-ui
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhoodieshq%2Ftoken-upgrade-ui%2Ftree%2Fmain%2Fpackages%2Fapp&demo-title=Token%20Upgrade%20UI&demo-description=App%20to%20Upgrade%20Token%20on%20Solana%20Blockchain)
+
 This document covers the usage of Token Upgrade UI project.
 
 ## Contents
