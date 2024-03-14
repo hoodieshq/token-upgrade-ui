@@ -1,4 +1,4 @@
-import defaultTheme from "tailwindcss/defaulttheme"
+import defaultTheme from "tailwindcss/defaultTheme"
 import formsPlugin from "@tailwindcss/forms"
 import headlessuiPlugin from "@headlessui/tailwindcss"
 import type { Config } from "tailwindcss"
