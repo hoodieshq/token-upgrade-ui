@@ -100,7 +100,7 @@ jobs:
           pnpm exec playwright install --with-deps
 
       - name: build artefacts
-        run: pnpm --filter "@solana/*ui" run build-storybook --quiet
+        run: pnpm --filter "@solana/*ui" run build-sb --quiet
 
       - name: testing
         run: pnpm --filter "@solana/*ui" run ci:test-smoke
