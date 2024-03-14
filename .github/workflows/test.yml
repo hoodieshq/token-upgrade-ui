@@ -45,13 +45,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
-      - name: install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: testing
         run: |
+          pnpm it --frozen-lockfile
           pnpm lint
-          pnpm t
   # move smoke tests to the separate flow to enable "on" section for them
   smoke:
     name: Smoke
