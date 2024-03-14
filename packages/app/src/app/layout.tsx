@@ -1,22 +1,31 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import * as React from "react"
+import clsx from "clsx"
+import { Inter } from "next/font/google"
+import { Metadata } from "next"
+import { Layout } from "../widgets/layout"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
   title: "Token Upgrade UI",
   description: "Token Upgrade UI",
-};
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html
+      lang="en"
+      className={clsx("h-full", inter.variable)}
+      suppressHydrationWarning={false}
+    >
+      <body className="flex min-h-full bg-white antialiased dark:bg-zinc-900">
+        <div className="w-full">
+          <Layout>{children}</Layout>
+        </div>
+      </body>
     </html>
-  );
+  )
 }

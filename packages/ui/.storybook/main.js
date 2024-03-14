@@ -19,6 +19,12 @@ const config = {
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@storybook/addon-interactions"),
+    {
+      name: "@storybook/addon-styling",
+      options: {
+        postCss: true,
+      },
+    },
   ],
   core: {
     disableTelemetry: true,
@@ -37,6 +43,12 @@ const config = {
         "@storybook/addon-essentials/docs",
       ],
     }
-  }
+  },
+  previewHead: (head) => `
+    ${head}
+    ${`
+      <style type="text/css">html{ --font-inter: sans-serif; }</style>
+    `}
+  `
 };
 export default config;

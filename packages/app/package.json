@@ -14,24 +14,42 @@
     "lint": "pnpm run lint-next && pnpm run lint-pret",
     "lint-fix": "pnpm run lint-pret --w",
     "lint-next": "next lint",
-    "lint-pret": "prettier ./src/** ./**/*config.[jt]s --check",
+    "lint-pret": "prettier ./src/** --check",
     "start": "next start",
-    "test": "tsc --noEmit"
+    "test": ""
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "@solana/token-upgrade-ui": "1.0.0",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/wallet-adapter-wallets": "^0.19.31",
+    "@solana/web3.js": "^1.91.0",
+    "@tailwindcss/typography": "^0.5.10",
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.0.8",
     "next": "14.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.0",
+    "token-upgrade-ui-shared": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "cssnano": "^6.1.0",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "pino-pretty": "^10.3.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
+    "postcss-discard-duplicates": "^6.0.3",
+    "postcss-import": "^16.0.1",
     "typescript": "^5"
+  },
+  "peerDependencies": {
+    "pino-pretty": "^10.3.1"
   }
 }

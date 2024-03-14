@@ -12,6 +12,7 @@ env:
   PNPM_VERSION: 8
   PW_CACHE_AFFIX: playwright
   PW_CACHE_FOLDER: ~/.cache/ms-playwright
+  TURBO_TELEMETRY_DISABLED: 1
 
 jobs:
   common:
@@ -46,12 +47,13 @@ jobs:
             ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
       - name: install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: testing
         run: |
           pnpm lint
           pnpm t
+  # move smoke tests to the separate flow to enable "on" section for them
   smoke:
     name: Smoke
     runs-on: ubuntu-latest
@@ -98,7 +100,7 @@ jobs:
           pnpm exec playwright install --with-deps
 
       - name: build artefacts
-        run: pnpm --filter "@solana/*ui" run build-storybook --quiet
+        run: pnpm --filter "@solana/*ui" run build-sb --quiet
 
       - name: testing
         run: pnpm --filter "@solana/*ui" run ci:test-smoke

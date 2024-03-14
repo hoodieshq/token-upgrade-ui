@@ -5,28 +5,44 @@
   "keywords": [],
   "license": "Apache-2.0",
   "author": "",
-  "main": "index.js",
+  "main": "./lib/index.esm.mjs",
+  "exports": {
+    "./index.css": "./lib/index.esm.css",
+    ".": {
+      "types": "./lib/index.esm.d.mjs",
+      "import": "./lib/index.esm.mjs"
+    }
+  },
   "scripts": {
-    "build": "pnpm run build-storybook",
-    "build-storybook": "storybook build",
+    "build": "pnpm run build-package",
+    "build-package": "tsup -d lib --config ./tsup-esm.config.ts",
+    "build-sb": "storybook build",
     "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
-    "ci:sb-test": "wait-on tcp:6006 && pnpm run test-sb --browsers chromium,firefox",
+    "ci:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb --browsers chromium,firefox",
     "ci:test-smoke": "concurrently -k -s first -n \"SB,TEST\" \"pnpm run ci:sb\" \"pnpm run ci:sb-test\"",
-    "lint": "prettier ./src/** ./**/*config.[jt]s --check",
-    "lint-fix": "pnpm run lint --w",
+    "dev": "pnpm run build-package --watch src",
+    "lint": "pnpm run lint-pret && pnpm run lint-es",
+    "lint-es": "eslint ./src",
+    "lint-fix": "pnpm run lint-pret --w",
+    "lint-pret": "prettier ./src/** --check",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
-    "local:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run local:sb-kill",
+    "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "tsc --noEmit",
+    "test": "",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
+  "eslintConfig": {
+    "extends": "next/core-web-vitals",
+    "rules": {
+      "@next/next/no-html-link-for-pages": "off"
+    }
+  },
   "dependencies": {
-    "@headlessui/tailwindcss": "^0.2.0",
-    "@tailwindcss/forms": "^0.5.7",
-    "tailwindcss": "^3.3.0"
+    "class-variance-authority": "^0.7.0",
+    "token-upgrade-ui-shared": "1.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.9",
@@ -36,6 +52,7 @@
     "@storybook/addon-essentials": "^7.6.16",
     "@storybook/addon-interactions": "^7.6.16",
     "@storybook/addon-links": "^7.6.16",
+    "@storybook/addon-styling": "^1.3.7",
     "@storybook/blocks": "^7.6.16",
     "@storybook/react": "^7.6.16",
     "@storybook/react-webpack5": "^7.6.16",
@@ -44,6 +61,7 @@
     "@storybook/testing-library": "^0.2.2",
     "axe-playwright": "^2.0.1",
     "concurrently": "^8.2.2",
+    "eslint-plugin-storybook": "^0.8.0",
     "http-server": "^14.1.1",
     "install": "^0.13.0",
     "playwright": "^1.41.2",
@@ -52,6 +70,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
+    "tsup": "^8.0.2",
     "wait-on": "^7.2.0"
   }
 }

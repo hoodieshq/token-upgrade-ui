@@ -1,13 +1,19 @@
-import type { Config } from "tailwindcss";
+import { Config } from "tailwindcss"
+import preset, {
+  typographyStyles,
+} from "token-upgrade-ui-shared/tailwind.config.ts"
+import typographyPlugin from "@tailwindcss/typography"
 
 const config: Config = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@solana/token-upgrade-ui/lib/index.esm.css",
   ],
+  presets: [preset],
   theme: {
-    extend: {},
+    typography: typographyStyles,
   },
-  plugins: [],
-};
-export default config;
+  plugins: [typographyPlugin],
+} satisfies Config
+
+export default config
