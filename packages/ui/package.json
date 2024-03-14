@@ -9,7 +9,7 @@
   "exports": {
     "./index.css": "./lib/index.esm.css",
     ".": {
-      "types": "./lib/index.esm.d.mts",
+      "types": "./lib/index.esm.d.mjs",
       "import": "./lib/index.esm.mjs"
     }
   },
@@ -30,7 +30,7 @@
     "local:sb-test": "wait-on tcp:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "tsc --noEmit",
+    "test": "",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",

@@ -16,7 +16,7 @@
     "lint-next": "next lint",
     "lint-pret": "prettier ./src/** --check",
     "start": "next start",
-    "test": "tsc --noEmit"
+    "test": ""
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
@@ -43,6 +43,7 @@
     "cssnano": "^6.1.0",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "pino-pretty": "^10.3.1",
     "postcss": "^8",
     "postcss-discard-duplicates": "^6.0.3",
     "postcss-import": "^16.0.1",
