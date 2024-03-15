@@ -36,16 +36,9 @@ const notificationStory = {
 
 export default notificationStory
 
-type TestIdCmpProps<T> = T & { ["data-testid"]: string }
-
-export const Default: StoryObj<
-  TestIdCmpProps<Parameters<typeof Notification>[0]>
-> = {
-  args: {
-    swipeDirection: "left",
-  },
-  render: (...args) => {
-    console.log({ args })
+export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
+  args: {},
+  render: () => {
     const { setData } = useNotificationContext()
 
     return (
