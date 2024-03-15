@@ -21,5 +21,17 @@
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "turbo": "^1.12.4"
+  },
+  "pnpm": {
+    "allowedDeprecatedVersions": {
+      "@toruslabs/openlogin-jrpc": "3.2",
+      "@toruslabs/openlogin-utils": "3",
+      "@walletconnect/mobile-registry": "1.4",
+      "@walletconnect/qrcode-modal": "1.8",
+      "@walletconnect/types": "1.8"
+    },
+    "overrides": {
+      "bs58@^4.0.1": ">=5.0.0"
+    }
   }
 }
