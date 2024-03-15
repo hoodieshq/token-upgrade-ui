@@ -1,61 +1,70 @@
-import * as React from "react"
+import React, { createContext, useContext, useState } from "react"
 import * as Toast from "@radix-ui/react-toast"
 import ToastBody from "./toast"
 
-export function NotificationProvider({
-  swipeDirection = "right",
-}: Pick<Toast.ToastProviderProps, "swipeDirection">) {
-  const [open, setOpen] = React.useState(false)
-  const eventDateRef = React.useRef(new Date())
-  const timerRef = React.useRef(0)
+export type NotificationContextType = {
+  readonly message?: string
+  readonly link?: string
+  readonly setData: (data: { message: string; link?: string }) => void
+}
 
-  React.useEffect(() => {
-    return () => clearTimeout(timerRef.current)
-  }, [])
+export const NotificationContext = createContext<
+  NotificationContextType | undefined
+>(undefined)
+
+export function useNotificationContext() {
+  const context = useContext(NotificationContext)
+  if (context === undefined) {
+    throw new Error("Notification context required")
+  }
+
+  return context
+}
+
+export function NotificationProvider({
+  children,
+  swipeDirection = "right",
+}: Pick<Toast.ToastProviderProps, "swipeDirection"> & {
+  children: React.ReactNode
+}) {
+  const [data, setData] = useState<
+    { message: string; link?: string } | undefined
+  >(undefined)
+
+  const open = Boolean(data?.message)
 
   return (
-    <Toast.Provider swipeDirection={swipeDirection}>
-      <button
-        className="text-violet11 shadow-blackA4 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded bg-white px-[15px] text-[15px] font-medium leading-[35px] shadow-[0_2px_10px] outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
-        onClick={() => {
-          setOpen(false)
-          window.clearTimeout(timerRef.current)
-          timerRef.current = window.setTimeout(() => {
-            eventDateRef.current = oneWeekAway()
-            setOpen(true)
-          }, 100)
-        }}
-      >
-        Add to calendar
-      </button>
-      <div
-        aria-live="assertive"
-        className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
-      >
-        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-          <Toast.Root
-            className="data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=end]:animate-swipeOut grid grid-cols-[auto_max-content] items-center rounded-md bg-white data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]"
-            open={open}
-            onOpenChange={setOpen}
-          >
-            <ToastBody text="text" show onInspect={() => {}} />
-          </Toast.Root>
-          <Toast.Viewport className="fixed bottom-0 right-0 z-[2147483647] m-0 flex w-[390px] max-w-[100vw] list-none flex-col gap-[10px] p-[var(--viewport-padding)] outline-none [--viewport-padding:_25px]" />
+    <NotificationContext.Provider
+      value={{ message: data?.message, link: data?.link, setData }}
+    >
+      <Toast.Provider swipeDirection={swipeDirection}>
+        <div
+          aria-live="assertive"
+          className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+        >
+          <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+            <Toast.Root
+              className="grid grid-cols-[auto_max-content] items-center rounded-md bg-white data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:transition-[transform_200ms_ease-out]"
+              open={open}
+              onOpenChange={() => {
+                setData(undefined)
+              }}
+            >
+              {data?.message ? (
+                <ToastBody
+                  text={data.message}
+                  show={open}
+                  onInspect={() => {
+                    /* TODO: implement link handler */
+                  }}
+                />
+              ) : null}
+            </Toast.Root>
+            <Toast.Viewport className="fixed bottom-0 right-0 z-[2147483647] m-0 flex w-[390px] max-w-[100vw] list-none flex-col gap-[10px] p-[var(--viewport-padding)] outline-none [--viewport-padding:_25px]" />
+          </div>
         </div>
-      </div>
-    </Toast.Provider>
+      </Toast.Provider>
+      {children}
+    </NotificationContext.Provider>
   )
-}
-
-function oneWeekAway(date) {
-  const now = new Date()
-  const inOneWeek = now.setDate(now.getDate() + 7)
-  return new Date(inOneWeek)
-}
-
-function prettyDate(date) {
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "short",
-  }).format(date)
 }
