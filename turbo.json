@@ -10,5 +10,5 @@
     "test": {},
     "storybook": {}
   },
-  "globalEnv": []
+  "globalEnv": ["NEXT_PUBLIC_TOKEN_ADDRESS"]
 }

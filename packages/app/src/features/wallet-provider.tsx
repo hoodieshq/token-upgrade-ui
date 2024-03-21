@@ -1,5 +1,6 @@
+"use client"
 import "@solana/wallet-adapter-react-ui/styles.css"
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import {
   ConnectionProvider,
   WalletProvider,
@@ -15,20 +16,14 @@ export const Wallet: React.FC<{ children: React.ReactNode }> = ({
   // TODO: cover network change
   const network = WalletAdapterNetwork.Devnet
 
+  useEffect(() => {
+    console.info(`Establish connection to ${network}`)
+  }, []) // eslint-disable-line
+
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network])
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      //new SolflareWalletAdapter(),
-      //new WalletConnectWalletAdapter({
-      //network: WalletAdapterNetwork.Devnet,
-      //options: {  },
-      //}),
-    ],
-    [],
-  )
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], [])
 
   return (
     <ConnectionProvider endpoint={endpoint}>

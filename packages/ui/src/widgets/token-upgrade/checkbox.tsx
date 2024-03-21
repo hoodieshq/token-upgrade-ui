@@ -1,13 +1,18 @@
-import React from "react"
+import React, { forwardRef } from "react"
 import * as Checkbox from "@radix-ui/react-checkbox"
 import { CheckIcon } from "@radix-ui/react-icons"
 
-export default function Check({
-  defaultChecked,
-  onCheckedChange,
-}: React.ComponentProps<typeof Checkbox.Root>) {
+interface CheckProps extends React.ComponentProps<typeof Checkbox.Root> {
+  defaultChecked?: Checkbox.CheckedState
+  onCheckedChange?: (checked: Checkbox.CheckedState) => void
+}
+
+export default forwardRef<HTMLDivElement, CheckProps>(function Check(
+  { defaultChecked, onCheckedChange },
+  forwardRef,
+) {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center" ref={forwardRef}>
       <div className="min-w-0 flex-1 text-sm leading-6">
         <label htmlFor="c1" className="font-medium text-gray-900">
           Custom Destination
@@ -27,4 +32,4 @@ export default function Check({
       </div>
     </div>
   )
-}
+})

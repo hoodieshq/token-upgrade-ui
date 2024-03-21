@@ -1,9 +1,9 @@
 import * as React from "react"
-import Link from "next/link"
+import clsx from "clsx"
 import { cva, VariantProps } from "class-variance-authority"
 
 const buttonVariants = cva(
-  "inline-flex justify-center rounded-lg outline-2 outline-offset-2 transition-colors",
+  "inline-flex items-center justify-center outline-2 outline-offset-2 transition-colors rounded bg-indigo-600 px-2 py-1 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
   {
     variants: {
       variant: {
@@ -18,7 +18,7 @@ const buttonVariants = cva(
         gray: "bg-gray-800 text-white hover:bg-gray-900 active:bg-gray-800 active:text-white/80",
       },
       size: {
-        sm: "text-sm",
+        md: "text-md",
       },
     },
     compoundVariants: [
@@ -32,33 +32,29 @@ const buttonVariants = cva(
     defaultVariants: {
       tone: "gray",
       variant: "solid",
-      size: "sm",
+      size: "md",
     },
   },
 )
 
 type ButtonProps = VariantProps<typeof buttonVariants> &
-  (
-    | Omit<React.ComponentPropsWithoutRef<typeof Link>, "color">
-    | (Omit<React.ComponentPropsWithoutRef<"button">, "color"> & {
-        href?: undefined
-      })
-  )
+  (Omit<React.ComponentPropsWithoutRef<"button">, "color"> & {
+    href?: undefined
+  })
 
 export function Button({ className, ...props }: ButtonProps) {
-  props.size ??= "sm"
-  props.tone ??= "gray"
-  props.variant ??= "solid"
-
-  className = buttonVariants({
+  const cn = buttonVariants({
     tone: props.tone,
     size: props.size,
     variant: props.variant,
   })
 
-  return typeof props.href === "undefined" ? (
-    <button className={className} {...props} />
-  ) : (
-    <Link className={className} {...props} />
+  return (
+    <button
+      className={clsx(className, cn)}
+      role="button"
+      type="button"
+      {...props}
+    />
   )
 }

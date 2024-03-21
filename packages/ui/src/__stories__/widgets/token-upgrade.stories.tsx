@@ -1,6 +1,20 @@
-import { TokenUpgrade } from "../../widgets/token-upgrade"
+import "@solana/wallet-adapter-react-ui/styles.css"
+import React, { useMemo } from "react"
 import type { StoryObj } from "@storybook/react"
+import { clusterApiUrl } from "@solana/web3.js"
 import { expect, userEvent, within } from "@storybook/test"
+import {
+  PhantomWalletAdapter,
+  SkyWalletAdapter,
+  UnsafeBurnerWalletAdapter,
+  WalletConnectWalletAdapter,
+} from "@solana/wallet-adapter-wallets"
+import { TokenUpgrade } from "../../widgets/token-upgrade"
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react"
 
 const story = {
   title: "UI/TokenUpgrade",
@@ -13,6 +27,21 @@ const story = {
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {},
+  decorators: [
+    (Story: any) => {
+      const endpoint = useMemo(() => clusterApiUrl("devnet"), [])
+      const wallets = useMemo(() => [new SkyWalletAdapter()], [])
+      return (
+        <ConnectionProvider endpoint={endpoint}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>
+              <Story />
+            </WalletModalProvider>
+          </WalletProvider>
+        </ConnectionProvider>
+      )
+    },
+  ],
 }
 
 export default story
