@@ -1,4 +1,4 @@
-import { Fragment } from "react"
+import React, { Fragment } from "react"
 import { Transition } from "@headlessui/react"
 
 export default function Toast({
@@ -21,7 +21,7 @@ export default function Toast({
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className="pointer-events-auto flex w-full max-w-md rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+      <div className="min-w-md pointer-events-auto flex w-full max-w-md rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
         <div className="w-0 flex-1 p-4">
           <div className="flex items-center">
             <div className="flex w-0 flex-1 justify-between">

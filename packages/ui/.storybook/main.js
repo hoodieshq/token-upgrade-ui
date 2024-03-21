@@ -49,6 +49,22 @@ const config = {
     ${`
       <style type="text/css">html{ --font-inter: sans-serif; }</style>
     `}
-  `
+  `,
+  webpackFinal: (config) => {
+    return {
+      ...config,
+      resolve: {
+        ...(config.resolve ||{}),
+        fallback: {
+          crypto: false,
+          http: false,
+          https: false,
+          stream: false,
+          zlib: false,
+        }
+      }
+    }
+
+  }
 };
 export default config;

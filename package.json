@@ -20,7 +20,7 @@
     "@manypkg/cli": "^0.21.2",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
-    "turbo": "^1.12.4"
+    "turbo": "^1.12.5"
   },
   "pnpm": {
     "allowedDeprecatedVersions": {
@@ -31,7 +31,9 @@
       "@walletconnect/types": "1.8"
     },
     "overrides": {
-      "bs58@^4.0.1": ">=5.0.0"
+      "bs58@^4.0.1": ">=5.0.0",
+      "react@^16.8.4": ">=18.2.0",
+      "react-dom@^16.8.4": ">=18.2.0"
     }
   }
 }
