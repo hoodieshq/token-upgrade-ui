@@ -7,9 +7,8 @@ import { Button } from "../shared/button"
 
 interface UpgradeButtonProps extends React.ComponentPropsWithoutRef<"button"> {}
 
-export function UpgradeButton({ className }: UpgradeButtonProps) {
+export function UpgradeButton({ className, ...props }: UpgradeButtonProps) {
   const { connected, wallet } = useWallet()
-
   const noWallet = !Boolean(wallet)
 
   return (
@@ -22,13 +21,21 @@ export function UpgradeButton({ className }: UpgradeButtonProps) {
       )}
     >
       {connected ? (
-        <Button className="h-[48px] w-[100%]">Upgrade Token</Button>
+        <Button className="h-[48px] w-[100%]" {...props}>
+          Upgrade Token
+        </Button>
       ) : noWallet ? (
         <>
-          <BaseWalletSelectButton className="w-[100%] justify-center" />
+          <BaseWalletSelectButton
+            className="w-[100%] justify-center"
+            {...props}
+          />
         </>
       ) : (
-        <BaseWalletConnectButton className="w-[100%] justify-center" />
+        <BaseWalletConnectButton
+          className="w-[100%] justify-center"
+          {...props}
+        />
       )}
     </div>
   )

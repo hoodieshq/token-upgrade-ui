@@ -5,12 +5,16 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react"
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets"
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 import { clusterApiUrl } from "@solana/web3.js"
+import { NotificationProvider } from "@solana/token-upgrade-ui"
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 
-export const Wallet: React.FC<{ children: React.ReactNode }> = ({
+const queryClient = new QueryClient()
+
+export const AllProviders: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   // TODO: cover network change
@@ -26,10 +30,14 @@ export const Wallet: React.FC<{ children: React.ReactNode }> = ({
   const wallets = useMemo(() => [new PhantomWalletAdapter()], [])
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+    <NotificationProvider>
+      <QueryClientProvider client={queryClient}>
+        <ConnectionProvider endpoint={endpoint}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>{children}</WalletModalProvider>
+          </WalletProvider>
+        </ConnectionProvider>
+      </QueryClientProvider>
+    </NotificationProvider>
   )
 }

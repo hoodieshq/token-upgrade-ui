@@ -2,11 +2,11 @@
 import * as React from "react"
 import { Header } from "../features/header"
 import { motion } from "framer-motion"
-import { Wallet } from "../features/wallet-provider"
+import { AllProviders } from "../features/connect-providers"
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <Wallet>
+    <AllProviders>
       <div className="h-full">
         <motion.header
           layoutScroll
@@ -19,6 +19,6 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
           {/* Footer */}
         </div>
       </div>
-    </Wallet>
+    </AllProviders>
   )
 }
