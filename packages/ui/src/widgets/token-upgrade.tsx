@@ -1,12 +1,10 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
-import * as Wallet from "@solana/wallet-adapter-react"
-import * as web3 from "@solana/web3.js"
 import Amount from "./token-upgrade/amount"
-import clsx from "clsx"
+import { Container } from "./token-upgrade/container"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { TextField } from "../shared/fields"
 import { UpgradeButton } from "../features/upgrade-button"
@@ -16,50 +14,27 @@ import { withErrorBoundary } from "react-error-boundary"
 
 const error = Debug("error:token-upgrade-ui")
 
-export interface TokenUpgradeProps {
+export interface TokenUpgradeProps
+  extends React.ComponentPropsWithoutRef<"div"> {
   tokenAddress?: string
   symbol?: string
 }
 
-function Container({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  return (
-    <div
-      className={clsx("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", className)}
-      {...props}
-    />
-  )
-}
-
-export function TokenUpgradeBase({
-  tokenAddress,
-  ...props
-}: TokenUpgradeProps) {
-  const [{ amount }, setS] = useTokenAmount()
+export function TokenUpgradeBase({ symbol, tokenAddress }: TokenUpgradeProps) {
+  const [{ amount }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
-  const { setData } = useNotificationContext()
-
-  const symbol = useMemo(() => {
-    let s = props.symbol
-    if (!s && tokenAddress) {
-      s = `${tokenAddress.slice(0, 2)}..${tokenAddress.slice(-1)}`
-    }
-    return s
-  }, [tokenAddress, props.symbol])
+  const { setNotification } = useNotificationContext()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
-      setS({ type: "changeAmount", payload: { amount } })
+      setAction({ type: "changeAmount", payload: { amount } })
     },
-    [setS],
+    [setAction],
   )
 
   const onTokenUpgrade = useCallback(() => {
-    console.log("Upgrade token", amount)
-    setData({ message: "Upgrading token..." })
-  }, [amount, setData])
+    setNotification({ message: "Upgrading token..." })
+  }, [setNotification])
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
@@ -69,13 +44,13 @@ export function TokenUpgradeBase({
         <Container>
           <Form.Field className="pb-4 pt-3.5" name="amount">
             <Amount
+              address={tokenAddress}
               balance={balance}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
               symbol={symbol}
             />
           </Form.Field>
-
           <Form.Field className="pb-4 pt-3.5" name="destination">
             <Destination />
           </Form.Field>
@@ -92,14 +67,14 @@ export function TokenUpgradeBase({
 
 export const TokenUpgrade = withErrorBoundary(TokenUpgradeBase, {
   fallback: (
-    <>
+    <div className="container flex flex-col">
       <div>Error initializing wallet connection.</div>
       <div>
         Did you initialize the{" "}
         <pre className="inline-block">{"<TokenUpgrade/>"}</pre> component
         properly?
       </div>
-    </>
+    </div>
   ),
   onError: (e: Error) => {
     error(e.message)

@@ -21,19 +21,20 @@ async function sleep(t = 1500) {
 export async function createTokens(
   connection: web3.Connection,
   userWallet: Wallet,
-  //tokenUpgradeProgramId,
+  tokenUpgradeProgramId: string,
   amount = 1,
   decimals = 9,
 ) {
-  //if (!tokenUpgradeProgramId) throw new Error("Absent program id")
+  if (!tokenUpgradeProgramId?.length) throw new Error("Absent program id")
 
   const payer = web3.Keypair.generate()
-  await sleep()
   const wallet = {
     payer,
     publicKey: payer.publicKey,
   }
+  await sleep()
 
+  console.log("Transfering SOL to the issuer...")
   await userWallet.adapter.sendTransaction(
     new web3.Transaction().add(
       web3.SystemProgram.transfer({
@@ -45,9 +46,6 @@ export async function createTokens(
 
     connection,
   )
-  await sleep()
-
-  console.log(await connection.getBalance(wallet.publicKey))
   await sleep()
 
   const oldToken = await spl.createMint(
@@ -66,6 +64,7 @@ export async function createTokens(
   )
   console.log(`Token ${oldToken} created`)
   await sleep()
+
   const newToken = await spl.createMint(
     connection,
     wallet.payer,
@@ -90,15 +89,15 @@ export async function createTokens(
   await sleep()
 
   // Create escrow
-  //const [tokenUpgradeAuthority] = web3.PublicKey.findProgramAddressSync(
-  //[
-  //Buffer.from("token-escrow-authority"),
-  //oldToken.toBuffer(),
-  //newToken.toBuffer(),
-  //],
-  //tokenUpgradeProgramId,
-  //)
-  //console.log(`Calculated Escrow address: ${tokenUpgradeAuthority}`)
+  const [tokenUpgradeAuthority] = web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("token-escrow-authority"),
+      oldToken.toBuffer(),
+      newToken.toBuffer(),
+    ],
+    new web3.PublicKey(tokenUpgradeProgramId),
+  )
+  console.log(`Calculated Escrow address: ${tokenUpgradeAuthority}`)
 
   return { owner: wallet, oldToken, newToken }
 }
@@ -106,12 +105,13 @@ export async function createTokens(
 export async function airdropToken(
   connection: web3.Connection,
   token: web3.PublicKey,
+  token2022: web3.PublicKey,
+  escrow: web3.PublicKey,
   owner: Owner,
   holder: Wallet,
   amount = 1,
   decimals = 9,
 ) {
-  console.log({ owner, token })
   const holderPubkey = holder.adapter.publicKey as web3.PublicKey
 
   const holderATA = await spl.createAccount(
@@ -121,6 +121,7 @@ export async function airdropToken(
     holderPubkey,
   )
 
+  console.log(`Minting ${amount} of ${token} to ${holderATA}`)
   await spl.mintTo(
     connection,
     owner.payer,
@@ -129,7 +130,29 @@ export async function airdropToken(
     owner.payer,
     amount * Math.pow(10, decimals),
   )
+  console.log("Old token was minted")
   await sleep()
 
-  console.log(`Airdrop ${amount} of ${token}`)
+  console.log("Minting Token-2022 to the escrow")
+  const mintNewToEscrowTx = new web3.Transaction().add(
+    spl.createMintToInstruction(
+      token,
+      escrow,
+      owner.publicKey,
+      amount * Math.pow(10, decimals),
+      undefined,
+      spl.TOKEN_2022_PROGRAM_ID,
+    ),
+  )
+  mintNewToEscrowTx.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash
+  mintNewToEscrowTx.feePayer = owner.publicKey
+  await connection.simulateTransaction(mintNewToEscrowTx, [owner.payer])
+  const sig = await web3.sendAndConfirmTransaction(
+    connection,
+    mintNewToEscrowTx,
+    [owner.payer],
+  )
+  console.log("Token-2022 minted:", sig)
 }

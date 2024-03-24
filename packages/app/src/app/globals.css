@@ -1,11 +1,9 @@
+@import "../../node_modules/@solana/token-upgrade-ui/lib/index.esm.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-  }
-
   [inert] ::-webkit-scrollbar {
     display: none;
   }
@@ -17,7 +15,4 @@
 @media (prefers-color-scheme: dark) {
   :root {
   }
-}
-
-body {
 }

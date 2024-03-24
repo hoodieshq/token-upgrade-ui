@@ -39,7 +39,7 @@ export default notificationStory
 export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
   args: {},
   render: () => {
-    const { setData } = useNotificationContext()
+    const { setNotification } = useNotificationContext()
 
     return (
       <>
@@ -48,7 +48,7 @@ export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
           role="show-toast"
           className="ml-3 rounded-md bg-white text-sm font-medium"
           onClick={() => {
-            setData({ message: "Notification text" })
+            setNotification({ message: "Notification text" })
           }}
         >
           Show Notification

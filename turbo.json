@@ -10,5 +10,5 @@
     "test": {},
     "storybook": {}
   },
-  "globalEnv": ["NEXT_PUBLIC_TOKEN_ADDRESS"]
+  "globalEnv": ["NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID"]
 }
