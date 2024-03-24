@@ -1,29 +1,35 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
-import { Container } from "./token-upgrade/container"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
 import React, { useCallback } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
+import { Container } from "./token-upgrade/container"
 import { TextField } from "../shared/fields"
 import { UpgradeButton } from "../features/upgrade-button"
-import { useNotificationContext } from "../features/notification"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
 
 const error = Debug("error:token-upgrade-ui")
 
 export interface TokenUpgradeProps
-  extends React.ComponentPropsWithoutRef<"div"> {
-  tokenAddress?: string
+  extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
+  onUpgradeEnd?: (a: { signature: string }) => void
+  onUpgradeError?: () => void
+  onUpgradeStart?: () => void
   symbol?: string
+  tokenAddress?: string
 }
 
-export function TokenUpgradeBase({ symbol, tokenAddress }: TokenUpgradeProps) {
-  const [{ amount }, setAction] = useTokenAmount()
+export function TokenUpgradeBase({
+  onUpgradeEnd,
+  onUpgradeStart,
+  symbol,
+  tokenAddress,
+}: TokenUpgradeProps) {
+  const [{ amount, destination }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
-  const { setNotification } = useNotificationContext()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
@@ -32,9 +38,16 @@ export function TokenUpgradeBase({ symbol, tokenAddress }: TokenUpgradeProps) {
     [setAction],
   )
 
-  const onTokenUpgrade = useCallback(() => {
-    setNotification({ message: "Upgrading token..." })
-  }, [setNotification])
+  const onTokenUpgrade = useCallback(async () => {
+    onUpgradeStart?.()
+    console.log({ amount })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const signature = ((a) => a)("signature")
+
+    onUpgradeEnd?.({ signature })
+  }, [amount, onUpgradeStart, onUpgradeEnd])
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 

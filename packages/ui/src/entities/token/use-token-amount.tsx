@@ -2,6 +2,7 @@ import { useReducer } from "react"
 
 export type State = {
   amount?: number
+  destination?: string
 }
 
 function useTokenAmount<S extends State>(state: S, action: any): State {

@@ -59,12 +59,25 @@ export default function Home() {
     _log("Successfully airdroped")
   }, [connection, wallet, owner, oldToken, newToken, escrow, _log])
 
+  console.log({ oldToken })
+
   return (
     <>
       <Pattern />
       <div className="prose py-2 dark:prose-invert">
         <div className="container flex justify-center">
-          <TokenUpgrade tokenAddress={oldToken?.toString()} />
+          <TokenUpgrade
+            onUpgradeStart={() =>
+              setNotification({ message: "Upgrading token..." })
+            }
+            onUpgradeEnd={({ signature }) =>
+              setNotification({
+                message: "Token upgraded",
+                link: `https://explorer.solana.com/tx/${signature}`,
+              })
+            }
+            tokenAddress={oldToken?.toString()}
+          />
         </div>
       </div>
 

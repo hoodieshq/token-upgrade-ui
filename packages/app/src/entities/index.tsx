@@ -121,7 +121,7 @@ export async function airdropToken(
     holderPubkey,
   )
 
-  console.log(`Minting ${amount} of ${token} to ${holderATA}`)
+  console.log(`Minting ${amount} of ${token} to ${holderATA}...`)
   await spl.mintTo(
     connection,
     owner.payer,
@@ -133,26 +133,22 @@ export async function airdropToken(
   console.log("Old token was minted")
   await sleep()
 
-  console.log("Minting Token-2022 to the escrow")
-  const mintNewToEscrowTx = new web3.Transaction().add(
-    spl.createMintToInstruction(
-      token,
-      escrow,
-      owner.publicKey,
-      amount * Math.pow(10, decimals),
-      undefined,
-      spl.TOKEN_2022_PROGRAM_ID,
-    ),
-  )
-  mintNewToEscrowTx.recentBlockhash = (
-    await connection.getRecentBlockhash()
-  ).blockhash
-  mintNewToEscrowTx.feePayer = owner.publicKey
-  await connection.simulateTransaction(mintNewToEscrowTx, [owner.payer])
-  const sig = await web3.sendAndConfirmTransaction(
+  console.log("Minting Token-2022 to the escrow...")
+  const mint2022Sig = await sendAndConfirmTransaction(
     connection,
-    mintNewToEscrowTx,
+    new web3.Transaction().add(
+      spl.createMintToInstruction(
+        token2022,
+        escrow,
+        owner.publicKey,
+        amount * Math.pow(10, decimals),
+        undefined,
+        spl.TOKEN_2022_PROGRAM_ID,
+      ),
+    ),
+    owner.publicKey,
     [owner.payer],
   )
-  console.log("Token-2022 minted:", sig)
+  console.log("Token-2022 minted:", mint2022Sig)
+  await sleep()
 }

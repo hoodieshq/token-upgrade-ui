@@ -39,7 +39,7 @@ export function useTokenBalance(address?: web3.PublicKey | string) {
           { mint: address },
         )
 
-        console.log({ results })
+        console.log({ results }, address)
 
         for (const item of results.value) {
           // TODO: use schema to parse values
@@ -47,9 +47,10 @@ export function useTokenBalance(address?: web3.PublicKey | string) {
             mint: item.account.data.parsed.info.mint,
             tokenAmount: item.account.data.parsed.info.tokenAmount,
           }
-          const address = tokenInfo.mint
+          const mintAddress = tokenInfo.mint
+          console.log({ address, mintAddress })
           const amount = tokenInfo.tokenAmount.uiAmountString
-          if (address === address) {
+          if (mintAddress === address) {
             return amount
           }
         }
