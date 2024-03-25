@@ -48,7 +48,7 @@ export default function ChangeCluster({
     <div className={className}>
       <label
         htmlFor={name}
-        className="block text-sm font-medium leading-6 text-gray-900"
+        className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
       >
         Cluster endpoint <i className="text-xs">(see console for logs)</i>
       </label>
@@ -68,7 +68,7 @@ export default function ChangeCluster({
         </div>
         <button
           type="button"
-          className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          className="dark:bg-gray relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           onClick={() => trySetEndpoint(raw)}
         >
           Use

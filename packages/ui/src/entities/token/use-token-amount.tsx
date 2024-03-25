@@ -8,8 +8,6 @@ export type State = {
 function useTokenAmount<S extends State>(state: S, action: any): State {
   if (!action) return state
 
-  console.log({ action })
-
   switch (action.type) {
     case "changeAmount": {
       return { ...state, amount: action.payload.amount }

@@ -11,6 +11,12 @@ const config: Config = {
   ],
   presets: [preset],
   theme: {
+    colors: ({ colors }) => ({
+      gray: colors.gray,
+      indigo: colors.indigo,
+      white: colors.white,
+      zinc: colors.zinc,
+    }),
     typography: typographyStyles,
   },
   plugins: [typographyPlugin],

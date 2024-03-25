@@ -6,17 +6,17 @@ import Destination from "./token-upgrade/destination"
 import React, { useCallback } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
-import { TextField } from "../shared/fields"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
+import { useTokenUpgrade } from ".."
 
 const error = Debug("error:token-upgrade-ui")
 
 export interface TokenUpgradeProps
   extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
   onUpgradeEnd?: (a: { signature: string }) => void
-  onUpgradeError?: () => void
+  onUpgradeError?: (e: Error) => void
   onUpgradeStart?: () => void
   symbol?: string
   tokenAddress?: string
@@ -24,12 +24,14 @@ export interface TokenUpgradeProps
 
 export function TokenUpgradeBase({
   onUpgradeEnd,
+  onUpgradeError,
   onUpgradeStart,
   symbol,
   tokenAddress,
 }: TokenUpgradeProps) {
   const [{ amount, destination }, setAction] = useTokenAmount()
-  const { balance } = useTokenBalance(tokenAddress)
+  const { balance } = useTokenBalance(tokenAddress, { placeholderData: "0" })
+  const { mutate } = useTokenUpgrade()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
@@ -40,14 +42,26 @@ export function TokenUpgradeBase({
 
   const onTokenUpgrade = useCallback(async () => {
     onUpgradeStart?.()
-    console.log({ amount })
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    const signature = ((a) => a)("signature")
-
-    onUpgradeEnd?.({ signature })
-  }, [amount, onUpgradeStart, onUpgradeEnd])
+    mutate(
+      { address: tokenAddress, amount, destination },
+      {
+        onSuccess: (signature) => {
+          onUpgradeEnd?.({ signature })
+        },
+        onError: (error: Error) => {
+          onUpgradeError?.(error)
+        },
+      },
+    )
+  }, [
+    amount,
+    mutate,
+    onUpgradeStart,
+    onUpgradeEnd,
+    onUpgradeError,
+    tokenAddress,
+  ])
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
@@ -58,7 +72,7 @@ export function TokenUpgradeBase({
           <Form.Field className="pb-4 pt-3.5" name="amount">
             <Amount
               address={tokenAddress}
-              balance={balance}
+              balance={balance ?? "0"}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
               symbol={symbol}

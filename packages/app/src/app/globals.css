@@ -12,7 +12,10 @@
 :root {
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
+  }
+  .wallet-adapter-button {
+    background-color: gray;
   }
 }
