@@ -10,6 +10,6 @@ export default defineConfig(() => ({
     "index.esm": "./src/index.ts",
   },
   esbuildOptions(options) {
-    options.external = ["react", "buffer", "@solana/*"];
+    options.external = ["react", "buffer", "@solana/*"]
   },
 }))

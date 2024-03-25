@@ -58,6 +58,8 @@ const OuterComponent = () => (
 ### Commands
 
 - `pnpm i` - Install
+- `pnpm lint` - Check code-style
 - `pnpm build` - Build the project
-- `pnpm --filter "*" lint-fix` - Prettify source code
+- `pnpm dev` - Start development in watch mode
 - `pnpm playground` - Launch Storybook's environment
+- `pnpm --filter "*" lint-fix` - Prettify source code
