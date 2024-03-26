@@ -64,7 +64,7 @@ export function useTokenBalance(
       return "0"
     },
     queryKey: ["useTokenBalance", address, publicKey],
-    refetchInterval: opts?.refetchInterval ?? 3000,
+    refetchInterval: opts?.refetchInterval ?? 12000,
     refetchIntervalInBackground: opts?.refetchIntervalInBackground,
   })
 

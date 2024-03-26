@@ -19,6 +19,7 @@ const CLUSTER_MONIKER = (process.env.CLUSTER_MONIKER ??
   "devnet") as web3.Cluster;
 const WALLET_ADDRESS =
   process.env.WALLET_ADDRESS ?? `${homedir()}/.config/solana/id.json`;
+const SOLANA_TOKEN_UPGRADE_CLI = process.env.SOLANA_TOKEN_UPGRADE_CLI ?? "spl-token-upgrade"
 
 if (!WALLET_ADDRESS) throw new Error("Absent wallet");
 
@@ -31,7 +32,7 @@ const [_node, _script, holderAddress, tokenAmount, tokenDecimals] =
   process.argv;
 console.debug("Arguments:", { holderAddress, tokenAmount, tokenDecimals });
 
-async function issueTokens(holderAddress, amount = "1", decimals = "9") {
+async function issueTokens(holderAddress: string, amount = "1", decimals = "9") {
   const payer = keypairFromJSON(WALLET_ADDRESS);
   const owner: Owner = {
     payer,
@@ -61,7 +62,7 @@ async function issueTokens(holderAddress, amount = "1", decimals = "9") {
     ),
     "Creating ATA to hold the mint",
   );
-  console.log("Token Account created");
+  console.log(`Token Account ${token.address} created`);
 
   const mint2022 = await withSleep(
     await spl.createMint(
@@ -76,7 +77,7 @@ async function issueTokens(holderAddress, amount = "1", decimals = "9") {
     ),
     "Creating mint",
   );
-  console.log(`Mint created: ${mint}`);
+  console.log(`Mint created: ${mint2022}`);
 
   const token2022 = await withSleep(
     await spl.getOrCreateAssociatedTokenAccount(
@@ -91,7 +92,7 @@ async function issueTokens(holderAddress, amount = "1", decimals = "9") {
     ),
     "Creating ATA to hold the mint",
   );
-  console.log("Token-2022 Account created");
+  console.log(`Token-2022 Account ${token2022.address} created`);
 
   /// Minting
   //
@@ -115,14 +116,14 @@ async function issueTokens(holderAddress, amount = "1", decimals = "9") {
       owner.publicKey,
       uiAmount(amount, decimals),
     ),
-    `Minting ${amount} of ${token.address} to ${holderAccount.address}`,
+    `Minting ${amount} of ${token.mint} to ${holderAccount.address}`,
   );
   console.log("Token minted:", minted);
 
   /// Creating escrow account for upgrade purposes
   //
   const [, createEscrowResp] = spawnSubcommandSync(
-    `spl-token-upgrade -u ${connection.rpcEndpoint} create-escrow ${token.mint} ${token2022.mint}`,
+    `${SOLANA_TOKEN_UPGRADE_CLI} -u ${connection.rpcEndpoint} create-escrow ${token.mint} ${token2022.mint}`,
   );
   const escrowAccount = new web3.PublicKey(
     (createEscrowResp as string).split(" ")[3],
@@ -149,7 +150,9 @@ async function issueTokens(holderAddress, amount = "1", decimals = "9") {
   );
   console.log("Token minted to escrow:", sendedToEscrow);
 
-  return `Success. ${token.mint} is eligible for upgrade.`;
+  console.log(`Success. ${token.mint} is eligible for upgrade.`);
+
+  return `Use this query string for demonstration: "?token=${mint}&tokenExt=${mint2022}&escrow=${escrowAccount}"`;
 }
 
 issueTokens(holderAddress, tokenAmount, tokenDecimals).then(

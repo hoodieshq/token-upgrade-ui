@@ -26,7 +26,7 @@ To make things work, you need this:
 Repository [contains script](./scripts/issue-tokens.mts) to mint the "Old token" to the holder's wallet and top-up enough of "New token" to the escrow.
 
 ```sh
-pnpx tsx ./scripts/issue-tokens.mts $HOLDER_ADDRESS 
+SOLANA_TOKEN_UPGRADE_CLI=<%path_to_upgrade_cli%> pnpx tsx ./scripts/issue-tokens.mts $HOLDER_ADDRESS
 # use address of your Phantom's wallet for ex.
 ```
 
@@ -41,6 +41,7 @@ import { TokenUpgrade } from "@solana/token-upgrade-ui"
 
 const OuterComponent = () => (
   <TokenUpgrade
+    escrow={/* escrow address */}
     onUpgradeStart={() =>
       console.log({ message: "Upgrading token..." })
     }
@@ -50,7 +51,9 @@ const OuterComponent = () => (
         link: `https://explorer.solana.com/tx/${signature}`,
       })
     }
-    tokenAddress={tokenAddressToUpgrade}
+    tokenAddress={/* token address to upgrade */}
+    tokenExtAddress={/* token extension address */}
+    tokenUpgradeProgramId={/* deployed upgrade program address */}
   />
 )
 ``` 

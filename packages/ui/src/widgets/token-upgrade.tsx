@@ -9,25 +9,31 @@ import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
-import { useTokenUpgrade } from ".."
+import { useTokenUpgrade } from "../entities/use-token-upgrade"
 
 const error = Debug("error:token-upgrade-ui")
 
 export interface TokenUpgradeProps
   extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
+  escrow?: string
   onUpgradeEnd?: (a: { signature: string }) => void
   onUpgradeError?: (e: Error) => void
   onUpgradeStart?: () => void
   symbol?: string
   tokenAddress?: string
+  tokenExtAddress?: string
+  tokenUpgradeProgramId?: string
 }
 
 export function TokenUpgradeBase({
+  escrow,
   onUpgradeEnd,
   onUpgradeError,
   onUpgradeStart,
   symbol,
   tokenAddress,
+  tokenExtAddress,
+  tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
   const [{ amount, destination }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress, { placeholderData: "0" })
@@ -44,7 +50,14 @@ export function TokenUpgradeBase({
     onUpgradeStart?.()
 
     mutate(
-      { address: tokenAddress, amount, destination },
+      {
+        amount,
+        destination,
+        escrow,
+        newAddress: tokenExtAddress,
+        originalAddress: tokenAddress,
+        upgradeProgramId: tokenUpgradeProgramId,
+      },
       {
         onSuccess: (signature) => {
           onUpgradeEnd?.({ signature })
@@ -56,11 +69,15 @@ export function TokenUpgradeBase({
     )
   }, [
     amount,
+    destination,
+    escrow,
     mutate,
-    onUpgradeStart,
     onUpgradeEnd,
     onUpgradeError,
+    onUpgradeStart,
     tokenAddress,
+    tokenExtAddress,
+    tokenUpgradeProgramId,
   ])
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0

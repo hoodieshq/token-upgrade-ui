@@ -22,12 +22,14 @@ const inputVariants = cva(
 interface InputProps
   extends VariantProps<typeof inputVariants>,
     React.ComponentPropsWithoutRef<"input"> {
+  label?: string
   onInputChange?: ({ amount }: { amount: number }) => void
 }
 
 export default function Input({
   className,
   name,
+  label = "Input",
   onInputChange,
   defaultValue,
   ...props
@@ -40,7 +42,7 @@ export default function Input({
         htmlFor={name}
         className="mb-2 block text-sm font-medium leading-6 text-gray-900 dark:text-white"
       >
-        Escrow Address
+        {label}
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
         <input
