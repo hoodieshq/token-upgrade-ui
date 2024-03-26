@@ -1,10 +1,9 @@
-"use client"
-import * as React from "react"
-import { Header } from "../features/header"
+import React from "react"
+import { Header } from "./header"
 import { motion } from "framer-motion"
-import { AllProviders } from "../features/connect-providers"
+import { AllProviders } from "./connect-providers"
 
-export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+export function Layout({ children }: React.PropsWithChildren) {
   return (
     <AllProviders>
       <div className="h-full">

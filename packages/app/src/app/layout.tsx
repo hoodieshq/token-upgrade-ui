@@ -18,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={clsx("h-full", inter.variable)}>
       <body className="flex min-h-full bg-white antialiased dark:bg-zinc-900">
-        <div className="w-full">
-          <Layout>{children}</Layout>
-        </div>
+        <div className="w-full">{children}</div>
       </body>
     </html>
   )
