@@ -17,6 +17,9 @@ importers:
       '@manypkg/cli':
         specifier: ^0.21.2
         version: 0.21.2
+      '@solana/token-upgrade-ui':
+        specifier: 1.0.0
+        version: link:packages/ui
       prettier:
         specifier: ^3.2.5
         version: 3.2.5

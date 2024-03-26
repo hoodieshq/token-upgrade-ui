@@ -1,10 +1,6 @@
 import * as spl from "@solana/spl-token"
 import * as web3 from "@solana/web3.js"
 import Debug from "debug"
-import {
-  enrichTxWithRecentInfo,
-  sendAndConfirmTransaction,
-} from "../transaction"
 
 const log = Debug("token-upgrade-ui:upgrade")
 

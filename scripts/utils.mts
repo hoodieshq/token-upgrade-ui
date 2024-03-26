@@ -45,7 +45,7 @@ export function uiAmount(amount: string, decimals: string) {
   return Number(amount) * Math.pow(10, Number(decimals));
 }
 
-export function spawnSubcommandSync(command: string, args?: string[]) {
+export function spawnSubcommandSync(command: string, _args?: string[]) {
   const result = childProcess.spawnSync(command, { shell: true });
 
   const { status, stderr, stdout } = result;
@@ -58,29 +58,4 @@ export function spawnSubcommandSync(command: string, args?: string[]) {
   log("|>", stdout.toString());
 
   return [status, stdout.toString()];
-}
-
-async function enrichTxWithRecentInfo(
-  connection: web3.Connection,
-  tx: web3.Transaction,
-  payer: web3.PublicKey,
-) {
-  tx.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-  tx.feePayer = payer;
-
-  return tx;
-}
-
-export async function sendAndConfirmTransaction(
-  connection: web3.Connection,
-  tx: web3.Transaction,
-  payer: web3.PublicKey,
-  signers: web3.Keypair[],
-) {
-  let t9n = await enrichTxWithRecentInfo(connection, tx, payer);
-
-  await connection.simulateTransaction(t9n, signers);
-  const sig = await web3.sendAndConfirmTransaction(connection, t9n, signers);
-
-  return sig;
 }
