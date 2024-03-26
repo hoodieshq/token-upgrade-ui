@@ -14,8 +14,8 @@
   },
   "main": "./lib/index.esm.mjs",
   "scripts": {
-    "build": "pnpm run build-package",
-    "build-package": "tsup -d lib --config ./tsup-esm.config.ts",
+    "build": "pnpm run build-package --env.NODE_ENV=production",
+    "build-package": "tsup -d lib --config=./tsup-esm.config.ts",
     "build-sb": "storybook build",
     "ci:sb": "pnpm exec http-server ./storybook-static --port 6006 --silent",
     "ci:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb --browsers chromium,firefox",

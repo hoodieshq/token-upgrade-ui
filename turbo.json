@@ -2,10 +2,10 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "outputs": ["storybook-static/**", ".next/**"],
-      "dependsOn": ["lint", "^build"]
+      "outputs": ["lib/**", ".next/**", "!.next/cache/**"],
+      "dependsOn": ["lint", "test", "^build"]
     },
-    "dev": { "cache": false, "persistent": true, "dependsOn": ["build"] },
+    "dev": { "cache": false, "persistent": true, "dependsOn": [] },
     "lint": {},
     "test": {},
     "storybook": {}

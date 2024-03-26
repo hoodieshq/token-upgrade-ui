@@ -1,9 +1,11 @@
 import { defineConfig } from "tsup"
 
-export default defineConfig(() => ({
+export default defineConfig((options) => ({
+  clean: true,
   dts: true,
   format: "esm",
-  sourcemap: true,
+  minify: options?.env?.NODE_ENV === "production" ? true : undefined,
+  sourcemap: Boolean(options.watch),
   splitting: true,
   target: "esnext",
   entry: {
