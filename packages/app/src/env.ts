@@ -1,1 +1,2 @@
-export const TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS ?? ""
+export const TOKEN_UPGRADE_PROGRAM_ID =
+  process.env.NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID

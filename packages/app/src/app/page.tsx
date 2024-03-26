@@ -1,75 +1,101 @@
 "use client"
-import * as web3 from "@solana/web3.js"
-import { airdropToken, createTokens } from "../entities/index"
-import { Button, TokenUpgrade } from "@solana/token-upgrade-ui"
+import { TokenUpgrade, useNotificationContext } from "@solana/token-upgrade-ui"
 import { Pattern } from "../shared/pattern"
-import { TOKEN_ADDRESS } from "../env"
-import { useCallback, useState } from "react"
-import { useConnection, useWallet } from "@solana/wallet-adapter-react"
+import { TOKEN_UPGRADE_PROGRAM_ID } from "../env"
+import { useCallback, useEffect, useState } from "react"
+import ChangeCluster from "../features/change-cluster"
+import Input from "../shared/input"
+import * as web3 from "@solana/web3.js"
 
 export default function Home() {
-  const { connection } = useConnection()
-  const { wallet } = useWallet()
+  const { setNotification } = useNotificationContext()
 
-  const [owner, setOwner] = useState<{
-    payer: web3.Keypair
-    publicKey: web3.PublicKey
-  }>()
-  const [oldToken, setOldToken] = useState<web3.PublicKey>()
-  const [newToken, setNewToken] = useState<web3.PublicKey>()
+  const _log = useCallback(
+    (msg: string) => {
+      setNotification({ message: msg })
+      globalThis.console.log(msg)
+    },
+    [setNotification],
+  )
 
-  const onCreate = useCallback(async () => {
-    if (!wallet) return console.error("Absent wallet")
-    console.log("Create tokens...")
-    const {
-      owner,
-      oldToken: o,
-      newToken: n,
-    } = await createTokens(connection, wallet)
-    setOwner(owner)
-    setOldToken(o)
-    setNewToken(n)
-    console.log("Successfully created")
-  }, [connection, wallet])
+  const [token, setToken] = useState<web3.PublicKey>()
+  const [tokenExt, setTokenExt] = useState<web3.PublicKey>()
+  const [escrow, setEscrow] = useState<web3.PublicKey>()
 
-  const onAirdrop = useCallback(async () => {
-    if (!owner) return console.error("Absent owner")
-    if (!oldToken) return console.error("Absent token")
-    if (!wallet) return console.error("Absent wallet")
-    console.log("Airdrop 1 token...")
-    await airdropToken(connection, oldToken, owner, wallet)
-    console.log("Successfully airdroped")
-  }, [connection, wallet, owner, oldToken])
+  useEffect(() => {
+    const url = new URLSearchParams(globalThis.location.search)
+    console.log(url.get("token"), url.get("tokenExt"), url.get("escrow"))
+
+    const t = url.get("token")
+    const te = url.get("tokenExt")
+    const e = url.get("escrow")
+    if (t) setToken(new web3.PublicKey(t))
+    if (te) setTokenExt(new web3.PublicKey(te))
+    if (e) setEscrow(new web3.PublicKey(e))
+  }, [])
 
   return (
     <>
       <Pattern />
       <div className="prose py-2 dark:prose-invert">
         <div className="container flex justify-center">
-          <TokenUpgrade tokenAddress={oldToken?.toString()} />
+          <TokenUpgrade
+            escrow={escrow?.toString()}
+            onUpgradeStart={() => _log("Upgrading token")}
+            onUpgradeEnd={({ signature }) =>
+              setNotification({
+                message: "Token upgraded",
+                link: `https://explorer.solana.com/tx/${signature}`,
+              })
+            }
+            onUpgradeError={(error) =>
+              _log(`Error: ${error.message || error.name}`)
+            }
+            tokenAddress={token?.toString()}
+            tokenExtAddress={tokenExt?.toString()}
+            tokenUpgradeProgramId={TOKEN_UPGRADE_PROGRAM_ID}
+          />
         </div>
       </div>
-      <div className="container flex justify-center gap-4 py-2">
-        <Button onClick={onCreate}>Create tokens</Button>
-        <Button onClick={onAirdrop}>Airdrop 1 token</Button>
-      </div>
-      <div className="light:text-white container flex justify-center py-2 dark:text-black">
-        <pre>Connected to the {connection.rpcEndpoint}.</pre>
-      </div>
-      <div className="light:text-white container flex justify-center py-2 dark:text-black">
-        <pre>See additional logging at the console</pre>
-      </div>
-      {oldToken && newToken ? (
-        <div className="align-center light:text-white align-center container flex flex-col justify-center py-2 dark:text-black">
-          Execute command at the terminal to create escrow account:
-          <pre className="w-[100%] text-center">
-            <textarea
-              className="h-[20vh] w-[55vw] overflow-hidden border-none text-sm"
-              value={`spl-token-upgrade create-escrow ${oldToken.toString()} ${newToken.toString()}`}
+
+      <div className="light:text-black dark:text-white">
+        <div className="container flex flex-col items-center justify-center py-2">
+          <div className="min-w-80 pb-1.5 pt-2.5">
+            <Input
+              defaultValue={token?.toString()}
+              name="tokenAddress"
+              label="Token address"
+              onChange={(e) => {
+                setToken(new web3.PublicKey(e.target.value.trim()))
+              }}
+              placeholder="Paste here token address to update"
             />
-          </pre>
+          </div>
+          <div className="min-w-80 pb-1.5 pt-2.5">
+            <Input
+              defaultValue={tokenExt?.toString()}
+              name="token2022Address"
+              label="Token Extension address"
+              onChange={(e) => {
+                setTokenExt(new web3.PublicKey(e.target.value.trim()))
+              }}
+              placeholder="Paste here token address to update"
+            />
+          </div>
+          <div className="min-w-80 pb-1.5 pt-2.5">
+            <Input
+              defaultValue={escrow?.toString()}
+              name="escrow"
+              label="Escrow address"
+              onChange={(e) => {
+                setEscrow(new web3.PublicKey(e.target.value.trim()))
+              }}
+              placeholder="Paste here token address to update"
+            />
+          </div>
+          <ChangeCluster className="min-w-80 pb-1.5 pt-2.5" />
         </div>
-      ) : null}
+      </div>
     </>
   )
 }

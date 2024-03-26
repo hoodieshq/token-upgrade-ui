@@ -1,65 +1,84 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
-import * as Wallet from "@solana/wallet-adapter-react"
-import * as web3 from "@solana/web3.js"
 import Amount from "./token-upgrade/amount"
-import clsx from "clsx"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
-import { TextField } from "../shared/fields"
+import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
-import { useNotificationContext } from "../features/notification"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
+import { useTokenUpgrade } from "../entities/use-token-upgrade"
 
 const error = Debug("error:token-upgrade-ui")
 
-export interface TokenUpgradeProps {
-  tokenAddress?: string
+export interface TokenUpgradeProps
+  extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
+  escrow?: string
+  onUpgradeEnd?: (a: { signature: string }) => void
+  onUpgradeError?: (e: Error) => void
+  onUpgradeStart?: () => void
   symbol?: string
-}
-
-function Container({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  return (
-    <div
-      className={clsx("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", className)}
-      {...props}
-    />
-  )
+  tokenAddress?: string
+  tokenExtAddress?: string
+  tokenUpgradeProgramId?: string
 }
 
 export function TokenUpgradeBase({
+  escrow,
+  onUpgradeEnd,
+  onUpgradeError,
+  onUpgradeStart,
+  symbol,
   tokenAddress,
-  ...props
+  tokenExtAddress,
+  tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
-  const [{ amount }, setS] = useTokenAmount()
-  const { balance } = useTokenBalance(tokenAddress)
-  const { setData } = useNotificationContext()
-
-  const symbol = useMemo(() => {
-    let s = props.symbol
-    if (!s && tokenAddress) {
-      s = `${tokenAddress.slice(0, 2)}..${tokenAddress.slice(-1)}`
-    }
-    return s
-  }, [tokenAddress, props.symbol])
+  const [{ amount, destination }, setAction] = useTokenAmount()
+  const { balance } = useTokenBalance(tokenAddress, { placeholderData: "0" })
+  const { mutate } = useTokenUpgrade()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
-      setS({ type: "changeAmount", payload: { amount } })
+      setAction({ type: "changeAmount", payload: { amount } })
     },
-    [setS],
+    [setAction],
   )
 
-  const onTokenUpgrade = useCallback(() => {
-    console.log("Upgrade token", amount)
-    setData({ message: "Upgrading token..." })
-  }, [amount, setData])
+  const onTokenUpgrade = useCallback(async () => {
+    onUpgradeStart?.()
+
+    mutate(
+      {
+        amount,
+        destination,
+        escrow,
+        newAddress: tokenExtAddress,
+        originalAddress: tokenAddress,
+        upgradeProgramId: tokenUpgradeProgramId,
+      },
+      {
+        onSuccess: (signature) => {
+          onUpgradeEnd?.({ signature })
+        },
+        onError: (error: Error) => {
+          onUpgradeError?.(error)
+        },
+      },
+    )
+  }, [
+    amount,
+    destination,
+    escrow,
+    mutate,
+    onUpgradeEnd,
+    onUpgradeError,
+    onUpgradeStart,
+    tokenAddress,
+    tokenExtAddress,
+    tokenUpgradeProgramId,
+  ])
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
@@ -69,13 +88,13 @@ export function TokenUpgradeBase({
         <Container>
           <Form.Field className="pb-4 pt-3.5" name="amount">
             <Amount
-              balance={balance}
+              address={tokenAddress}
+              balance={balance ?? "0"}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
               symbol={symbol}
             />
           </Form.Field>
-
           <Form.Field className="pb-4 pt-3.5" name="destination">
             <Destination />
           </Form.Field>
@@ -92,14 +111,14 @@ export function TokenUpgradeBase({
 
 export const TokenUpgrade = withErrorBoundary(TokenUpgradeBase, {
   fallback: (
-    <>
+    <div className="container flex flex-col">
       <div>Error initializing wallet connection.</div>
       <div>
         Did you initialize the{" "}
         <pre className="inline-block">{"<TokenUpgrade/>"}</pre> component
         properly?
       </div>
-    </>
+    </div>
   ),
   onError: (e: Error) => {
     error(e.message)

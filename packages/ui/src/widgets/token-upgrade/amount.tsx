@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
 
@@ -20,19 +20,33 @@ const inputVariants = cva(
 interface AmountProps
   extends VariantProps<typeof inputVariants>,
     React.ComponentPropsWithoutRef<"input"> {
+  address?: string
   balance: string
+  name?: string
   onAmountChange?: ({ amount }: { amount: number }) => void
   symbol?: string
 }
 
 export default function Amount({
+  address,
   balance,
   disabled,
+  name = "amount",
   onAmountChange,
   symbol,
 }: AmountProps) {
   let variants = {}
   if (disabled) variants = { variant: "disabled" }
+
+  const displaySymbol = useMemo(() => {
+    let s = symbol
+    if (!s && address && address.length > 3) {
+      s = `${address.slice(0, 2)}..${address.slice(-1)}`
+    } else if (!s && address && address?.length <= 3) {
+      s = address
+    }
+    return s
+  }, [address, symbol])
 
   return (
     <div>
@@ -43,18 +57,17 @@ export default function Amount({
         Amount
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
-        {disabled ?? (
+        {disabled ? (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <span className="text-gray-500 sm:text-sm">$</span>
+            <span className="text-gray-500 sm:text-sm"></span>
           </div>
-        )}
+        ) : null}
         <Form.Control
           asChild
           disabled={disabled}
           type="number"
           onChange={(e) => {
             const value = Number(e.target.value)
-            console.log({ value })
             const isValid = value > 0
             if (isValid) {
               if (onAmountChange) onAmountChange({ amount: value })
@@ -62,22 +75,20 @@ export default function Amount({
           }}
         >
           <input
-            aria-describedby="amount"
+            aria-describedby={name}
             className={inputVariants(variants)}
             disabled={disabled}
-            id="amount"
+            id={name}
             max={balance}
             min={0}
-            name="amount"
+            name={name}
             placeholder="0.00"
             type="number"
           />
         </Form.Control>
-        {symbol ? (
+        {displaySymbol ? (
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <span className="text-gray-500 sm:text-sm" id="price-currency">
-              {symbol}
-            </span>
+            <span className="text-gray-500 sm:text-sm">{displaySymbol}</span>
           </div>
         ) : null}
       </div>

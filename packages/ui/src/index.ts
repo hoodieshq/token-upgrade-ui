@@ -1,6 +1,6 @@
-import useTokenAmount from "./entities/token/use-token-amount"
 export * from "./entities/transaction"
+export * from "./entities/upgrade/index"
+// TODO: move notifications to separate bundle
 export * from "./features/notification"
-export { Button } from "./shared/button"
 export { TokenUpgrade } from "./widgets/token-upgrade"
-export { useTokenAmount }
+export { useTokenUpgrade } from "./entities/use-token-upgrade"

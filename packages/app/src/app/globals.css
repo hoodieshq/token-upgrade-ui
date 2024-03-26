@@ -1,11 +1,9 @@
+@import "../../node_modules/@solana/token-upgrade-ui/lib/index.esm.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-  }
-
   [inert] ::-webkit-scrollbar {
     display: none;
   }
@@ -14,10 +12,10 @@
 :root {
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
   }
-}
-
-body {
+  .wallet-adapter-button {
+    background-color: gray;
+  }
 }

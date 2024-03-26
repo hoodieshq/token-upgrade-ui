@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss"
-import preset, { typographyStyles } from "token-upgrade-ui-shared/tailwind.config.ts"
-import typographyPlugin from '@tailwindcss/typography'
+import preset, {
+  typographyStyles,
+} from "token-upgrade-ui-shared/tailwind.config.ts"
+import typographyPlugin from "@tailwindcss/typography"
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -29,7 +31,7 @@ export default {
         slideIn: "slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)",
         swipeOut: "swipeOut 100ms ease-out",
       },
-    }
+    },
   },
-  plugins: [typographyPlugin]
+  plugins: [typographyPlugin],
 } satisfies Config
