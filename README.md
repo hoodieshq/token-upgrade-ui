@@ -51,8 +51,8 @@ Creating ATA to hold the mint
 Token-2022 Account 9jVB4ovwNaTnCZqXKDHTKHRh2fAG9PU4VCm3kjbDyP87 created
 Creating account for holder to store the token
 Holder account created
-Minting 1 of HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY to 86kiRdNWM7CNp4wqSpKR7UH5eDRYn7Rfb5JWf73ecqdu
-Token minted: s4nQjX9F9qx4E6UPNc2yYq49KP333gc9gEcBK5MTEZENurBYAZdbwcJHKBVsAqhAJWn7BJ2v2zX8PNJWWuJVevX
+Minting 1 of HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY to ...
+Token minted: ...
 |> Creating escrow account CRsajQtD7ZknkfypD9FhPfVh7uLkLTdmTAwtiManXQd3 owned by escrow authority DV5egMMZKAMVkS3EBuM8tPWYfy4ioTtMNWXi788Fh8kC
 Signature: 5g16wj4owBXF5fZJYkKSuGB4Zb3Fb7iNC9HzJdr4gCGYi5HPUQYbZ7gTGyb3GTdjuxeLAjs5CAdVgCchKxLfGVHc
 

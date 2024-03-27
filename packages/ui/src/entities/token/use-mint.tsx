@@ -5,7 +5,7 @@ import { useConnection } from "@solana/wallet-adapter-react"
 import { QueryObserverOptions, useQuery } from "@tanstack/react-query"
 
 export function useMint(
-  address: web3.PublicKey | string,
+  address: web3.PublicKey | string | undefined,
   opts?: Pick<
     QueryObserverOptions<spl.Mint | undefined>,
     "refetchInterval" | "refetchIntervalInBackground" | "placeholderData"
@@ -16,6 +16,7 @@ export function useMint(
   const { data, error } = useQuery({
     placeholderData: opts?.placeholderData,
     queryFn: async (): Promise<spl.Mint | undefined> => {
+      if (!address) return undefined
       if (typeof address === "string") {
         address = new web3.PublicKey(address)
       }
