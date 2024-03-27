@@ -36,6 +36,36 @@ SOLANA_TOKEN_UPGRADE_CLI=<%path_to_upgrade_cli%> pnpx tsx ./scripts/issue-tokens
 
 Do not forget to declare proper id at the [source code](https://github.com/solana-labs/solana-program-library/blob/master/token-upgrade/program/src/lib.rs#L15).
 
+##### Example
+
+Here is the sample of script's output.
+
+```sh
+Creating mint
+Mint created: HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY
+Creating ATA to hold the mint
+Token Account Dejd9iw68G5wjtdu87b2qg2YcJJnruHNJQdJ8fPYbPs4 created
+Creating mint
+Mint created: DV389z9WBcYVmYLSBQCxi22mRv2pVosorqSMAuAJbTxQ
+Creating ATA to hold the mint
+Token-2022 Account 9jVB4ovwNaTnCZqXKDHTKHRh2fAG9PU4VCm3kjbDyP87 created
+Creating account for holder to store the token
+Holder account created
+Minting 1 of HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY to ...
+Token minted: ...
+|> Creating escrow account CRsajQtD7ZknkfypD9FhPfVh7uLkLTdmTAwtiManXQd3 owned by escrow authority DV5egMMZKAMVkS3EBuM8tPWYfy4ioTtMNWXi788Fh8kC
+Signature: 5g16wj4owBXF5fZJYkKSuGB4Zb3Fb7iNC9HzJdr4gCGYi5HPUQYbZ7gTGyb3GTdjuxeLAjs5CAdVgCchKxLfGVHc
+
+
+Escrow account created: CRsajQtD7ZknkfypD9FhPfVh7uLkLTdmTAwtiManXQd3
+Minting 1 of DV389z9WBcYVmYLSBQCxi22mRv2pVosorqSMAuAJbTxQ to escrow
+Token minted to escrow: 2fdHGHQ7PVxjA1WmRiGvdqjVkrd3kzsUv5pztVTcDCAzWikeJ1cQpgYYVJvXRKaCL4R8P211xSNngeEY1EKQ5Dfm
+Success. HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY is eligible for upgrade.
+Use this query string for demonstration: "?token=HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY&tokenExt=DV389z9WBcYVmYLSBQCxi22mRv2pVosorqSMAuAJbTxQ&escrow=CRsajQtD7ZknkfypD9FhPfVh7uLkLTdmTAwtiManXQd3"
+```
+
+You may use QueryString sample from the stdout to fill the necessary fields at the demo application.
+
 ### Setup
 
 ```typescript

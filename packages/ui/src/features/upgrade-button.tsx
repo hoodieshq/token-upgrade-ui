@@ -27,13 +27,16 @@ export function UpgradeButton({ className, ...props }: UpgradeButtonProps) {
       ) : noWallet ? (
         <>
           <BaseWalletSelectButton
+            aria-label="Select Wallet"
             className="w-[100%] justify-center"
+            role="button"
             {...props}
           />
         </>
       ) : (
         <BaseWalletConnectButton
           className="w-[100%] justify-center"
+          role="button"
           {...props}
         />
       )}

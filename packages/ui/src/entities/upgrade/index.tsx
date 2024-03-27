@@ -1,10 +1,6 @@
 import * as spl from "@solana/spl-token"
 import * as web3 from "@solana/web3.js"
 import Debug from "debug"
-import {
-  enrichTxWithRecentInfo,
-  sendAndConfirmTransaction,
-} from "../transaction"
 
 const log = Debug("token-upgrade-ui:upgrade")
 
@@ -29,11 +25,14 @@ export async function upgradeToken(
   const anciliaryAccountKeypair = web3.Keypair.generate()
   log(`Anciliary account: ${anciliaryAccountKeypair.publicKey}`)
 
+  const destinationAddress = (destination ??= holder)
+  const destinationOwner = destination ? destination : holder
+
   /// Holder or Destination ATA calculation for new token
   //
   const [destinationNewTokenAccount] = await web3.PublicKey.findProgramAddress(
     [
-      (destination || holder).toBuffer(),
+      destinationAddress.toBuffer(),
       spl.TOKEN_2022_PROGRAM_ID.toBuffer(),
       newToken.toBuffer(),
     ],
@@ -79,7 +78,7 @@ export async function upgradeToken(
     spl.createAssociatedTokenAccountIdempotentInstruction(
       holder,
       destinationNewTokenAccount,
-      holder,
+      destinationOwner,
       newToken,
       spl.TOKEN_2022_PROGRAM_ID,
     ),

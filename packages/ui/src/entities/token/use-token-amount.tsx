@@ -10,7 +10,19 @@ function useTokenAmount<S extends State>(state: S, action: any): State {
 
   switch (action.type) {
     case "changeAmount": {
-      return { ...state, amount: action.payload.amount }
+      let nextState = state
+
+      const { amount: nextAmount } = action.payload
+      if (nextAmount === state?.amount) {
+        nextState = state
+      } else {
+        nextState = { ...state, amount: nextAmount }
+      }
+
+      return nextState
+    }
+    case "changeDestination": {
+      return { ...state, destination: action.payload.destination }
     }
     default:
       return state

@@ -3,15 +3,16 @@ import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
+import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
 
-const error = Debug("error:token-upgrade-ui")
+const error = Debug("error:token-upgrade-ui:token-upgrade")
 
 export interface TokenUpgradeProps
   extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
@@ -37,11 +38,22 @@ export function TokenUpgradeBase({
 }: TokenUpgradeProps) {
   const [{ amount, destination }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress, { placeholderData: "0" })
+  const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
       setAction({ type: "changeAmount", payload: { amount } })
+    },
+    [setAction],
+  )
+
+  const onDestinationChange = useCallback(
+    (d: { value: string | undefined }) => {
+      setAction({
+        type: "changeDestination",
+        payload: { destination: d.value },
+      })
     },
     [setAction],
   )
@@ -80,6 +92,14 @@ export function TokenUpgradeBase({
     tokenUpgradeProgramId,
   ])
 
+  const { ph, step } = useMemo(() => {
+    if (!mint?.decimals) return { ph: undefined, step: undefined }
+
+    const float = Math.pow(10, -1 * mint.decimals)
+
+    return { ph: float.toFixed(mint.decimals), step: float * 1e3 }
+  }, [mint?.decimals])
+
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
   return (
@@ -92,11 +112,13 @@ export function TokenUpgradeBase({
               balance={balance ?? "0"}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
+              placeholder={ph}
+              step={step}
               symbol={symbol}
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="destination">
-            <Destination />
+            <Destination onDestinationChange={onDestinationChange} />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"

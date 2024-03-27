@@ -1,44 +1,48 @@
 import "@solana/wallet-adapter-react-ui/styles.css"
 import React, { useMemo } from "react"
 import type { StoryObj } from "@storybook/react"
-import { clusterApiUrl } from "@solana/web3.js"
-import { expect, userEvent, within } from "@storybook/test"
-import {
-  PhantomWalletAdapter,
-  SkyWalletAdapter,
-  UnsafeBurnerWalletAdapter,
-  WalletConnectWalletAdapter,
-} from "@solana/wallet-adapter-wallets"
-import { TokenUpgrade } from "../../widgets/token-upgrade"
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react"
+import { clusterApiUrl } from "@solana/web3.js"
+import { expect, fn, fireEvent, userEvent, within } from "@storybook/test"
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { TokenUpgrade } from "../../widgets/token-upgrade"
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
 
 const story = {
   title: "UI/TokenUpgrade",
   component: TokenUpgrade,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: "padded",
+    layout: "fullscreen",
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
+  args: {
+    onUpgradeEnd: fn(),
+    onUpgradeError: fn(),
+    onUpgradeStart: fn(),
+  },
   argTypes: {},
   decorators: [
     (Story: any) => {
       const endpoint = useMemo(() => clusterApiUrl("devnet"), [])
-      const wallets = useMemo(() => [new SkyWalletAdapter()], [])
+      const queryClient = new QueryClient()
+
       return (
-        <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect>
-            <WalletModalProvider>
-              <Story />
-            </WalletModalProvider>
-          </WalletProvider>
-        </ConnectionProvider>
+        <QueryClientProvider client={queryClient}>
+          <ConnectionProvider endpoint={endpoint}>
+            <WalletProvider wallets={[new PhantomWalletAdapter()]} autoConnect>
+              <WalletModalProvider>
+                <Story />
+              </WalletModalProvider>
+            </WalletProvider>
+          </ConnectionProvider>
+        </QueryClientProvider>
       )
     },
   ],
@@ -51,10 +55,39 @@ export const Default: StoryObj<ComponentPropsWithTestId<typeof TokenUpgrade>> =
     async play({ canvasElement, step }: any) {
       const ctx = within(canvasElement)
 
-      //await step("should be clickable", async () => {
-      //const btn = ctx.getByTestId("button")
-      //await expect(btn).not.toBeDisabled()
-      //await userEvent.click(btn)
-      //})
+      await step("should render", async () => {
+        await expect(ctx.getByLabelText("Select Wallet")).toBeDisabled()
+        await expect(
+          ctx.getByRole("spinbutton", { description: "Amount" }),
+        ).toBeDisabled()
+      })
+
+      await step("should toggle destination field", async () => {
+        const cbx = ctx.getByLabelText("toggle-destination")
+        await expect(cbx).not.toBeDisabled()
+        await userEvent.click(cbx)
+        await expect(
+          ctx.getByRole("textbox", { description: "Destination" }),
+        ).toBeVisible()
+      })
     },
   }
+
+export const WithTokenAddress: StoryObj<
+  ComponentPropsWithTestId<typeof TokenUpgrade>
+> = {
+  args: {
+    tokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  async play({ canvasElement, step }: any) {
+    const ctx = within(canvasElement)
+
+    await step("should allow change amount", async () => {
+      const input = ctx.getByRole("spinbutton", { description: "Amount" })
+
+      await expect(input).not.toBeDisabled()
+      await fireEvent.change(input, { target: { value: "1" } })
+      await expect(ctx.getByLabelText("Select Wallet")).not.toBeDisabled()
+    })
+  },
+}

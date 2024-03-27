@@ -4,11 +4,11 @@ import * as spl from "@solana/spl-token";
 import { homedir } from "node:os";
 import {
   keypairFromJSON,
-  sendAndConfirmTransaction,
   spawnSubcommandSync,
   uiAmount,
   withSleep,
 } from "./utils.mjs";
+import { sendAndConfirmTransaction } from "@solana/token-upgrade-ui"
 
 type Owner = {
   payer: web3.Keypair;
@@ -156,5 +156,5 @@ async function issueTokens(holderAddress: string, amount = "1", decimals = "9") 
 }
 
 issueTokens(holderAddress, tokenAmount, tokenDecimals).then(
-  console.log.bind(console, "Issue tokens."),
+  console.log.bind(console),
 );

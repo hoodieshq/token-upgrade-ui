@@ -4,10 +4,12 @@ import { Wallet } from "@solana/wallet-adapter-react"
 import { WalletName } from "@solana/wallet-adapter-base"
 
 type ButtonProps = React.PropsWithChildren<{
+  "aria-label"?: string
   className?: string
   disabled?: boolean
   endIcon?: React.ReactElement
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+  role?: string
   startIcon?: React.ReactElement
   style?: React.CSSProperties
   tabIndex?: number
@@ -16,10 +18,12 @@ type ButtonProps = React.PropsWithChildren<{
 const Button: FC<ButtonProps> = (props) => {
   return (
     <button
+      aria-label={props["aria-label"]}
       className={`wallet-adapter-button ${props.className || ""}`}
       disabled={props.disabled}
-      style={props.style}
       onClick={props.onClick}
+      role={props.role}
+      style={props.style}
       tabIndex={props.tabIndex || 0}
       type="button"
     >

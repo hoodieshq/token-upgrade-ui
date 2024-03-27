@@ -8,7 +8,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         disabled: "cursor-not-allowed px-1.5",
-        regular: "pl-7 pr-12",
+        regular: "pl-7 pr-14",
       },
     },
     defaultVariants: {
@@ -22,6 +22,7 @@ interface AmountProps
     React.ComponentPropsWithoutRef<"input"> {
   address?: string
   balance: string
+  label?: string
   name?: string
   onAmountChange?: ({ amount }: { amount: number }) => void
   symbol?: string
@@ -31,9 +32,14 @@ export default function Amount({
   address,
   balance,
   disabled,
+  label = "Amount",
   name = "amount",
   onAmountChange,
+  min = 0,
+  placeholder = "0.0",
+  step = 1,
   symbol,
+  ...props
 }: AmountProps) {
   let variants = {}
   if (disabled) variants = { variant: "disabled" }
@@ -49,12 +55,13 @@ export default function Amount({
   }, [address, symbol])
 
   return (
-    <div>
+    <>
       <label
-        htmlFor="price"
+        htmlFor={name}
+        id={`${name}-label`}
         className="block text-sm font-medium leading-6 text-gray-900"
       >
-        Amount
+        {label}
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
         {disabled ? (
@@ -68,30 +75,33 @@ export default function Amount({
           type="number"
           onChange={(e) => {
             const value = Number(e.target.value)
-            const isValid = value > 0
+            const isValid = value >= 0
             if (isValid) {
               if (onAmountChange) onAmountChange({ amount: value })
             }
           }}
         >
           <input
-            aria-describedby={name}
+            aria-describedby={`${name}-label`}
             className={inputVariants(variants)}
             disabled={disabled}
             id={name}
             max={balance}
-            min={0}
+            min={min}
             name={name}
-            placeholder="0.00"
+            placeholder={placeholder}
+            step={step}
             type="number"
+            role="spinbutton"
+            {...props}
           />
         </Form.Control>
         {displaySymbol ? (
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <span className="text-gray-500 sm:text-sm">{displaySymbol}</span>
+            <span className="text-violet11 sm:text-sm">{displaySymbol}</span>
           </div>
         ) : null}
       </div>
-    </div>
+    </>
   )
 }
