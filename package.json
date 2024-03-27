@@ -11,12 +11,14 @@
   "author": "",
   "scripts": {
     "build": "turbo run build",
+    "changeset": "changeset",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "playground": "turbo run storybook",
     "test": "manypkg check && turbo run test"
   },
   "dependencies": {
+    "@changesets/cli": "^2.27.1",
     "@manypkg/cli": "^0.21.2",
     "@solana/token-upgrade-ui": "1.0.0",
     "prettier": "^3.2.5",
