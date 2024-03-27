@@ -11,6 +11,7 @@
   "author": "",
   "scripts": {
     "build": "turbo run build",
+    "build-sb": "turbo run build-sb",
     "changeset": "changeset",
     "dev": "turbo run dev",
     "lint": "turbo run lint",

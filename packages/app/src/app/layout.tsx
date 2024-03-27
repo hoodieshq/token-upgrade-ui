@@ -2,7 +2,6 @@ import "./globals.css"
 import * as React from "react"
 import clsx from "clsx"
 import { Inter } from "next/font/google"
-import { Layout } from "../widgets/layout"
 import { Metadata } from "next"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })

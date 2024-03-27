@@ -5,6 +5,10 @@
       "outputs": ["lib/**", ".next/**", "!.next/cache/**"],
       "dependsOn": ["lint", "test", "^build"]
     },
+    "build-sb": {
+      "outputs": ["lib/**", "storybook-static/**"],
+      "dependsOn": ["lint", "test"]
+    },
     "dev": { "cache": false, "persistent": true, "dependsOn": [] },
     "lint": {},
     "test": {},
