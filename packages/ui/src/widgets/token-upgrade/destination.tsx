@@ -32,6 +32,7 @@ export default function Destination({
             <Check
               defaultChecked={customDestination}
               onCheckedChange={onChange}
+              aria-label="toggle-destination"
             />
           </Form.Control>
         </div>

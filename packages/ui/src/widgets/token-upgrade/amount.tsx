@@ -58,6 +58,7 @@ export default function Amount({
     <>
       <label
         htmlFor={name}
+        id={`${name}-label`}
         className="block text-sm font-medium leading-6 text-gray-900"
       >
         {label}
@@ -81,7 +82,7 @@ export default function Amount({
           }}
         >
           <input
-            aria-describedby={name}
+            aria-describedby={`${name}-label`}
             className={inputVariants(variants)}
             disabled={disabled}
             id={name}
@@ -91,6 +92,7 @@ export default function Amount({
             placeholder={placeholder}
             step={step}
             type="number"
+            role="spinbutton"
             {...props}
           />
         </Form.Control>

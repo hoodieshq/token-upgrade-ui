@@ -6,10 +6,12 @@ import type { StoryContext, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "@storybook/test"
 
 const notificationStory = {
-  title: "UI/Notification",
+  title: "UI/Features/Notification",
   component: Notification,
   parameters: {
-    a11y: { disable: true }, // TODO: fix issues
+    /// Disabling this will cause Storie to throw the `useMemo` error while rendering.
+    //  Leave this as @radix-ui/toast component has some a11y issues
+    a11y: { disable: true },
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
   },
@@ -45,7 +47,7 @@ export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
       <>
         <button
           type="button"
-          role="show-toast"
+          role="button"
           className="ml-3 rounded-md bg-white text-sm font-medium"
           onClick={() => {
             setNotification({ message: "Notification text" })
@@ -60,7 +62,7 @@ export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
     const ctx = within(canvasElement)
 
     await step("should call toast", async () => {
-      const btn = ctx.getByRole("show-toast")
+      const btn = ctx.getByRole("button")
       await expect(btn).not.toBeDisabled()
       await userEvent.click(btn)
     })
