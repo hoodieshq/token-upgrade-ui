@@ -25,7 +25,7 @@ export async function upgradeToken(
   const anciliaryAccountKeypair = web3.Keypair.generate()
   log(`Anciliary account: ${anciliaryAccountKeypair.publicKey}`)
 
-  const destinationAddress = destination ??= holder
+  const destinationAddress = (destination ??= holder)
   const destinationOwner = destination ? destination : holder
 
   /// Holder or Destination ATA calculation for new token
