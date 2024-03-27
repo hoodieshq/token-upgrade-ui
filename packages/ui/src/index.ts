@@ -1,5 +1,5 @@
 export * from "./entities/transaction"
-export * from "./entities/upgrade/index"
+export * from "./entities/upgrade"
 export * from "./features/notification"
 export { TokenUpgrade } from "./widgets/token-upgrade"
 export { useTokenUpgrade } from "./entities/use-token-upgrade"

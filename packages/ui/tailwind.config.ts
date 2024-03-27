@@ -3,13 +3,21 @@ import preset, {
   typographyStyles,
 } from "token-upgrade-ui-shared/tailwind.config.ts"
 import typographyPlugin from "@tailwindcss/typography"
+import { blackA, violet } from "@radix-ui/colors"
 
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/@radix-ui/**"
+  ],
   preset: [preset],
   theme: {
     typography: typographyStyles,
     extend: {
+      colors: () => ({
+        ...blackA,
+        ...violet,
+      }),
       keyframes: {
         hide: {
           from: { opacity: "1" },
