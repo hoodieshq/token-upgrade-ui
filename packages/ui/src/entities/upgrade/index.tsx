@@ -25,11 +25,14 @@ export async function upgradeToken(
   const anciliaryAccountKeypair = web3.Keypair.generate()
   log(`Anciliary account: ${anciliaryAccountKeypair.publicKey}`)
 
+  const destinationAddress = destination ??= holder
+  const destinationOwner = destination ? destination : holder
+
   /// Holder or Destination ATA calculation for new token
   //
   const [destinationNewTokenAccount] = await web3.PublicKey.findProgramAddress(
     [
-      (destination || holder).toBuffer(),
+      destinationAddress.toBuffer(),
       spl.TOKEN_2022_PROGRAM_ID.toBuffer(),
       newToken.toBuffer(),
     ],
@@ -75,7 +78,7 @@ export async function upgradeToken(
     spl.createAssociatedTokenAccountIdempotentInstruction(
       holder,
       destinationNewTokenAccount,
-      holder,
+      destinationOwner,
       newToken,
       spl.TOKEN_2022_PROGRAM_ID,
     ),
