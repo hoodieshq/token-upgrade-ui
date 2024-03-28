@@ -20,6 +20,18 @@ export async function upgradeToken(
 ): Promise<[web3.Transaction, web3.Signer[]]> {
   const originalMint = await spl.getMint(connection, oldToken)
 
+  /**
+   *  Converting uiAmount to the number of lamports.
+   *
+   *  It's needed to mult/div the result to remove inaccuracy.
+   */
+  function fromUiAmount(amount: number) {
+    const _amount = 1e10 * amount
+    const result = (_amount * Math.pow(10, originalMint.decimals)) / 1e10
+
+    return result
+}
+
   /// Anciliary creation
   //  Store N amount of token to upgrade
   const anciliaryAccountKeypair = web3.Keypair.generate()
@@ -47,6 +59,17 @@ export async function upgradeToken(
     spl.ASSOCIATED_TOKEN_PROGRAM_ID,
   )
 
+  const originalAccount = await spl.getAccount(connection, holderATA)
+
+  if (Number(originalAccount.amount) < fromUiAmount(amount)) {
+    throw new Error("Insufficient amount of token")
+  }
+  /// Checking that upgrade is for full amount of token
+  let shouldCloseOriginalATA = false
+  if (Number(originalAccount.amount) === fromUiAmount(amount)) {
+    shouldCloseOriginalATA = true
+  }
+
   /// Calculating minimal rent
   //
   const mintAccountRentExtemption =
@@ -72,7 +95,7 @@ export async function upgradeToken(
       holderATA,
       anciliaryAccountKeypair.publicKey,
       holder,
-      amount * Math.pow(10, originalMint.decimals),
+      fromUiAmount(amount),
     ),
     // Create associated account if needed
     spl.createAssociatedTokenAccountIdempotentInstruction(
@@ -99,6 +122,12 @@ export async function upgradeToken(
       holder,
     ),
   ]
+
+  if (shouldCloseOriginalATA) {
+    instructions.push(
+      spl.createCloseAccountInstruction(holderATA, holder, holder),
+    )
+  }
 
   const exchangeTx = new web3.Transaction().add(...instructions)
 

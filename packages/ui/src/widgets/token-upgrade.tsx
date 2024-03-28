@@ -9,7 +9,7 @@ import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
-import { useTokenBalance } from "../entities/token/use-token-balance"
+import { useTokenBalance, placeholderData } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
 
@@ -39,7 +39,7 @@ export function TokenUpgradeBase({
   tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
   const [{ amount, destination }, setAction] = useTokenAmount()
-  const { balance } = useTokenBalance(tokenAddress, { placeholderData: "0" })
+  const { balance } = useTokenBalance(tokenAddress, { placeholderData })
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
 
@@ -121,7 +121,7 @@ export function TokenUpgradeBase({
           <Form.Field className="pb-4 pt-3.5" name="amount">
             <Amount
               address={tokenAddress}
-              balance={balance}
+              balance={balance?.uiAmountString}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
               onAmountMaxChange={onAmountChange}
