@@ -9,7 +9,7 @@ import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
-import { useTokenBalance, placeholderData } from "../entities/token/use-token-balance"
+import { useTokenBalance } from "../entities/token/use-token-balance"
 import { withErrorBoundary } from "react-error-boundary"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
 
@@ -39,7 +39,7 @@ export function TokenUpgradeBase({
   tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
   const [{ amount, destination }, setAction] = useTokenAmount()
-  const { balance } = useTokenBalance(tokenAddress, { placeholderData })
+  const { balance } = useTokenBalance(tokenAddress)
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
 
@@ -106,6 +106,12 @@ export function TokenUpgradeBase({
 
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
+  const error = useMemo(() => {
+    if (balance?.decimals === -1)
+      return new Error("Wallet does not hold a token")
+    return undefined
+  }, [balance])
+
   return (
     <Form.Root
       className={clsx(
@@ -122,7 +128,8 @@ export function TokenUpgradeBase({
             <Amount
               address={tokenAddress}
               balance={balance?.uiAmountString}
-              disabled={!tokenAddress}
+              disabled={!tokenAddress || Boolean(error)}
+              error={error}
               onAmountChange={onAmountChange}
               onAmountMaxChange={onAmountChange}
               placeholder={ph}

@@ -30,7 +30,7 @@ export async function upgradeToken(
     const result = (_amount * Math.pow(10, originalMint.decimals)) / 1e10
 
     return result
-}
+  }
 
   /// Anciliary creation
   //  Store N amount of token to upgrade
