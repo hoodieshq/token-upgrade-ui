@@ -77,7 +77,7 @@ export const WithTokenAddress: StoryObj<
   ComponentPropsWithTestId<typeof TokenUpgrade>
 > = {
   args: {
-    tokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    tokenAddress: "HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY",
   },
   async play({ canvasElement, step }: any) {
     const ctx = within(canvasElement)

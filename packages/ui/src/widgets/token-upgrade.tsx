@@ -109,7 +109,7 @@ export function TokenUpgradeBase({
           <Form.Field className="pb-4 pt-3.5" name="amount">
             <Amount
               address={tokenAddress}
-              balance={balance ?? "0"}
+              balance={balance}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
               placeholder={ph}
