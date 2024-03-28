@@ -61,9 +61,9 @@ export function useTokenUpgrade() {
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       client.invalidateQueries({
-        queryKey: ["useTokenBalance", variables.originalAddress],
+        predicate: (query) => query.queryKey[0] === "useTokenBalance",
       })
     },
   })

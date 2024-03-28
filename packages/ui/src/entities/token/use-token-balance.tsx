@@ -16,6 +16,7 @@ export function useTokenBalance(
   const publicKey = wallet?.adapter.publicKey
 
   const { data: balance, error } = useQuery({
+    enabled: Boolean(address && publicKey),
     placeholderData: opts?.placeholderData,
     queryFn: async (): Promise<string> => {
       // no token selected yet
@@ -63,8 +64,8 @@ export function useTokenBalance(
       }
       return "0"
     },
-    queryKey: ["useTokenBalance", address, publicKey],
-    refetchInterval: opts?.refetchInterval ?? 12000,
+    queryKey: ["useTokenBalance", String(address), String(publicKey)],
+    refetchInterval: opts?.refetchInterval ?? 6000,
     refetchIntervalInBackground: opts?.refetchIntervalInBackground,
   })
 

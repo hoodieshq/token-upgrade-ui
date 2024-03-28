@@ -24,6 +24,9 @@ function useTokenAmount<S extends State>(state: S, action: any): State {
     case "changeDestination": {
       return { ...state, destination: action.payload.destination }
     }
+    case "clear": {
+      return {}
+    }
     default:
       return state
   }

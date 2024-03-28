@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
 import clsx from "clsx"
@@ -44,6 +44,7 @@ export default function Amount({
   placeholder = "0",
   step = 1,
   symbol,
+  value,
   ...props
 }: AmountProps) {
   let variants = {}
@@ -69,6 +70,12 @@ export default function Amount({
     },
     [onAmountMaxChange, inpRef],
   )
+
+  useEffect(() => {
+    if (inpRef.current && inpRef.current.value !== String(value)) {
+      inpRef.current.value = String(value || "")
+    }
+  }, [value])
 
   if (disabled) variants = { variant: "disabled" }
   if (hasBalance) variants = { variant: "active" }

@@ -74,6 +74,7 @@ export function TokenUpgradeBase({
       },
       {
         onSuccess: (signature) => {
+          setAction({ type: "clear" })
           onUpgradeEnd?.({ signature })
         },
         onError: (error: Error) => {
@@ -89,6 +90,7 @@ export function TokenUpgradeBase({
     onUpgradeEnd,
     onUpgradeError,
     onUpgradeStart,
+    setAction,
     tokenAddress,
     tokenExtAddress,
     tokenUpgradeProgramId,
@@ -110,6 +112,9 @@ export function TokenUpgradeBase({
         className,
         "flex min-w-80 flex-col overflow-hidden rounded-lg bg-white shadow",
       )}
+      onSubmit={(e) => {
+        e.preventDefault()
+      }}
     >
       <div className="px-4 py-4 sm:p-6">
         <Container>
@@ -123,6 +128,7 @@ export function TokenUpgradeBase({
               placeholder={ph}
               step={step}
               symbol={symbol}
+              value={amount}
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="destination">
