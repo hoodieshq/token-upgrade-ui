@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useRef, useState } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
+import clsx from "clsx"
 
 // TODO: adjust right padding according the symbol present
 const inputVariants = cva(
@@ -47,26 +48,26 @@ export default function Amount({
 }: AmountProps) {
   let variants = {}
   const hasBalance = balance && Number(balance) > 0
-  const [value, setValue] = useState<string>()
+  const inpRef = useRef<HTMLInputElement>(null)
 
   const onValueChange = useCallback(
     (value: string) => {
       const numValue = Number(value)
       const isValid = numValue >= 0
       if (isValid) {
-        setValue(value)
+        if (inpRef.current) inpRef.current.value = value
         onAmountChange?.({ amount: numValue })
       }
     },
-    [onAmountChange],
+    [onAmountChange, inpRef],
   )
 
   const onValueMaxChange = useCallback(
     (value: number) => {
-      setValue(String(value))
+      if (inpRef.current) inpRef.current.value = String(value)
       onAmountMaxChange?.({ amount: value })
     },
-    [onAmountMaxChange],
+    [onAmountMaxChange, inpRef],
   )
 
   if (disabled) variants = { variant: "disabled" }
@@ -91,7 +92,11 @@ export default function Amount({
       >
         {label}
       </label>
-      <div className="mt-2 flex rounded-md shadow-sm">
+      <div
+        className={clsx("mt-2 flex rounded-md shadow-sm", {
+          "mb-[22px]": !hasBalance,
+        })}
+      >
         {hasBalance && (
           <button
             className="relative -mr-px inline-flex w-[37px] items-center gap-x-1.5 rounded-l-md px-1.5 py-0.5 text-xs font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 lg:text-sm"
@@ -114,13 +119,13 @@ export default function Amount({
             <input
               aria-describedby={`${name}-label`}
               className={inputVariants(variants)}
-              value={value}
               disabled={disabled}
               id={name}
               max={balance}
               min={min}
               name={name}
               placeholder={placeholder}
+              ref={inpRef}
               step={step}
               type="number"
               role="spinbutton"

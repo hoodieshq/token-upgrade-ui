@@ -1,6 +1,7 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
+import clsx from "clsx"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
 import React, { useCallback, useMemo } from "react"
@@ -27,6 +28,7 @@ export interface TokenUpgradeProps
 }
 
 export function TokenUpgradeBase({
+  className,
   escrow,
   onUpgradeEnd,
   onUpgradeError,
@@ -103,7 +105,12 @@ export function TokenUpgradeBase({
   const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
 
   return (
-    <Form.Root className="flex flex-col overflow-hidden rounded-lg bg-white shadow">
+    <Form.Root
+      className={clsx(
+        className,
+        "flex min-w-80 flex-col overflow-hidden rounded-lg bg-white shadow",
+      )}
+    >
       <div className="px-4 py-4 sm:p-6">
         <Container>
           <Form.Field className="pb-4 pt-3.5" name="amount">
@@ -133,7 +140,7 @@ export function TokenUpgradeBase({
 
 export const TokenUpgrade = withErrorBoundary(TokenUpgradeBase, {
   fallback: (
-    <div className="container flex flex-col">
+    <div className="flex flex-col">
       <div>Error initializing wallet connection.</div>
       <div>
         Did you initialize the{" "}
