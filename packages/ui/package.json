@@ -25,12 +25,13 @@
     "lint-es": "eslint ./src",
     "lint-fix": "pnpm run lint-pret --w",
     "lint-pret": "prettier ./src/** --check",
+    "local:e2e": "anchor test",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
     "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "",
+    "test": "ava src --timeout 60s",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
@@ -60,6 +61,7 @@
     "@babel/preset-env": "^7.24.1",
     "@babel/preset-react": "^7.24.1",
     "@babel/preset-typescript": "^7.24.1",
+    "@project-serum/anchor": "^0.26.0",
     "@storybook/addon-a11y": "^7.6.17",
     "@storybook/addon-essentials": "^7.6.17",
     "@storybook/addon-interactions": "^7.6.17",
@@ -71,6 +73,7 @@
     "@storybook/test": "^7.6.17",
     "@storybook/test-runner": "^0.16.0",
     "@storybook/testing-library": "^0.2.2",
+    "ava": "^6.1.2",
     "axe-playwright": "^2.0.1",
     "concurrently": "^8.2.2",
     "eslint-plugin-storybook": "^0.8.0",
@@ -83,10 +86,19 @@
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
     "tsup": "^8.0.2",
+    "tsx": "^4.7.1",
     "wait-on": "^7.2.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=tsx"
+    ]
   }
 }

@@ -1,5 +1,6 @@
 import * as spl from "@solana/spl-token"
 import * as web3 from "@solana/web3.js"
+import { fromUiAmount } from "../transaction/index"
 import Debug from "debug"
 
 const log = Debug("token-upgrade-ui:upgrade")
@@ -19,18 +20,6 @@ export async function upgradeToken(
   destination?: web3.PublicKey,
 ): Promise<[web3.Transaction, web3.Signer[]]> {
   const originalMint = await spl.getMint(connection, oldToken)
-
-  /**
-   *  Converting uiAmount to the number of lamports.
-   *
-   *  It's needed to mult/div the result to remove inaccuracy.
-   */
-  function fromUiAmount(amount: number) {
-    const _amount = 1e10 * amount
-    const result = (_amount * Math.pow(10, originalMint.decimals)) / 1e10
-
-    return result
-  }
 
   /// Anciliary creation
   //  Store N amount of token to upgrade
@@ -61,12 +50,17 @@ export async function upgradeToken(
 
   const originalAccount = await spl.getAccount(connection, holderATA)
 
-  if (Number(originalAccount.amount) < fromUiAmount(amount)) {
+  if (
+    Number(originalAccount.amount) < fromUiAmount(amount, originalMint.decimals)
+  ) {
     throw new Error("Insufficient amount of token")
   }
   /// Checking that upgrade is for full amount of token
   let shouldCloseOriginalATA = false
-  if (Number(originalAccount.amount) === fromUiAmount(amount)) {
+  if (
+    Number(originalAccount.amount) ===
+    fromUiAmount(amount, originalMint.decimals)
+  ) {
     shouldCloseOriginalATA = true
   }
 
@@ -95,7 +89,7 @@ export async function upgradeToken(
       holderATA,
       anciliaryAccountKeypair.publicKey,
       holder,
-      fromUiAmount(amount),
+      fromUiAmount(amount, originalMint.decimals),
     ),
     // Create associated account if needed
     spl.createAssociatedTokenAccountIdempotentInstruction(

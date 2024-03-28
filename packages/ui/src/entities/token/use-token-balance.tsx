@@ -1,7 +1,8 @@
 import * as web3 from "@solana/web3.js"
 import { NATIVE_MINT } from "@solana/spl-token"
-import { useConnection } from "@solana/wallet-adapter-react"
+import { nativeToUiAmount } from "./index"
 import { QueryObserverOptions, useQuery } from "@tanstack/react-query"
+import { useConnection } from "@solana/wallet-adapter-react"
 import { useWallet } from "@solana/wallet-adapter-react"
 
 type InfoTokenAmount = {
@@ -51,17 +52,13 @@ export function useTokenBalance(
 
       if (NATIVE_MINT.equals(new web3.PublicKey(address))) {
         const balance = await connection.getBalance(publicKey)
-        const amount = balance / web3.LAMPORTS_PER_SOL
-
-        const a = amount.toFixed(
-          Math.fround(Math.log(web3.LAMPORTS_PER_SOL) / Math.log(10)),
-        )
+        const ui = nativeToUiAmount(balance)
 
         return {
           amount: String(balance),
           decimals: 9,
-          uiAmount: amount,
-          uiAmountString: a,
+          uiAmount: ui.uiAmount,
+          uiAmountString: ui.uiAmountString,
         }
       } else {
         // Get the initial solana token balance
