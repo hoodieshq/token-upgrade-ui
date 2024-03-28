@@ -119,6 +119,7 @@ export function TokenUpgradeBase({
               balance={balance}
               disabled={!tokenAddress}
               onAmountChange={onAmountChange}
+              onAmountMaxChange={onAmountChange}
               placeholder={ph}
               step={step}
               symbol={symbol}
