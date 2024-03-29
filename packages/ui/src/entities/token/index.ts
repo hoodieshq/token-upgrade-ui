@@ -6,6 +6,6 @@ export function nativeToUiAmount(balance: number) {
 
   return {
     uiAmount: amount,
-    uiAmountString: amount.toFixed(decimals)
+    uiAmountString: amount.toFixed(decimals),
   }
 }

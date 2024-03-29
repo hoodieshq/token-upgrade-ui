@@ -25,7 +25,7 @@
     "lint-es": "eslint ./src",
     "lint-fix": "pnpm run lint-pret --w",
     "lint-pret": "prettier ./src/** --check",
-    "local:e2e": "anchor test",
+    "local:test-e2e": "anchor test",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
     "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",

@@ -41,10 +41,6 @@ export async function withSleep<T>(promise: T, message?: string) {
   return result;
 }
 
-export function uiAmount(amount: string, decimals: string) {
-  return Number(amount) * Math.pow(10, Number(decimals));
-}
-
 export function spawnSubcommandSync(command: string, _args?: string[]) {
   const result = childProcess.spawnSync(command, { shell: true });
 

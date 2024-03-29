@@ -5,10 +5,9 @@ import { homedir } from "node:os";
 import {
   keypairFromJSON,
   spawnSubcommandSync,
-  uiAmount,
   withSleep,
 } from "./utils.mjs";
-import { sendAndConfirmTransaction } from "@solana/token-upgrade-ui"
+import { sendAndConfirmTransaction, fromUiAmount } from "@solana/token-upgrade-ui"
 
 type Owner = {
   payer: web3.Keypair;
@@ -114,7 +113,7 @@ async function issueTokens(holderAddress: string, amount = "1", decimals = "9") 
       token.mint,
       holderAccount.address,
       owner.publicKey,
-      uiAmount(amount, decimals),
+      fromUiAmount(Number(amount), Number(decimals)),
     ),
     `Minting ${amount} of ${token.mint} to ${holderAccount.address}`,
   );
@@ -138,7 +137,7 @@ async function issueTokens(holderAddress: string, amount = "1", decimals = "9") 
           token2022.mint,
           escrowAccount,
           owner.publicKey,
-          uiAmount(amount, decimals),
+          fromUiAmount(Number(amount), Number(decimals)),
           undefined,
           spl.TOKEN_2022_PROGRAM_ID,
         ),

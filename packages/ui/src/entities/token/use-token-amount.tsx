@@ -1,7 +1,7 @@
 import { useReducer } from "react"
 
 export type State = {
-  amount?: number
+  uiAmount?: number
   destination?: string
 }
 
@@ -12,11 +12,11 @@ function useTokenAmount<S extends State>(state: S, action: any): State {
     case "changeAmount": {
       let nextState = state
 
-      const { amount: nextAmount } = action.payload
-      if (nextAmount === state?.amount) {
+      const { uiAmount: nextAmount } = action.payload
+      if (nextAmount === state?.uiAmount) {
         nextState = state
       } else {
-        nextState = { ...state, amount: nextAmount }
+        nextState = { ...state, uiAmount: nextAmount }
       }
 
       return nextState

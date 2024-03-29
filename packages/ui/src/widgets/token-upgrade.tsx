@@ -10,8 +10,8 @@ import { Container } from "./token-upgrade/container"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
-import { withErrorBoundary } from "react-error-boundary"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
+import { withErrorBoundary } from "react-error-boundary"
 
 const error = Debug("error:token-upgrade-ui:token-upgrade")
 
@@ -38,14 +38,14 @@ export function TokenUpgradeBase({
   tokenExtAddress,
   tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
-  const [{ amount, destination }, setAction] = useTokenAmount()
+  const [{ uiAmount, destination }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
-      setAction({ type: "changeAmount", payload: { amount } })
+      setAction({ type: "changeAmount", payload: { uiAmount: amount } })
     },
     [setAction],
   )
@@ -65,7 +65,8 @@ export function TokenUpgradeBase({
 
     mutate(
       {
-        amount,
+        amount: uiAmount,
+        decimals: mint?.decimals,
         destination,
         escrow,
         newAddress: tokenExtAddress,
@@ -83,9 +84,10 @@ export function TokenUpgradeBase({
       },
     )
   }, [
-    amount,
+    uiAmount,
     destination,
     escrow,
+    mint,
     mutate,
     onUpgradeEnd,
     onUpgradeError,
@@ -104,7 +106,7 @@ export function TokenUpgradeBase({
     return { ph: float.toFixed(mint.decimals), step: float * 1e3 }
   }, [mint?.decimals])
 
-  const isAllowedUpgrade = typeof amount !== "undefined" && amount > 0
+  const isAllowedUpgrade = typeof uiAmount !== "undefined" && uiAmount > 0
 
   const error = useMemo(() => {
     if (balance?.decimals === -1)
@@ -135,7 +137,7 @@ export function TokenUpgradeBase({
               placeholder={ph}
               step={step}
               symbol={symbol}
-              value={amount}
+              value={uiAmount}
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="destination">
