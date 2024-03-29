@@ -14,6 +14,7 @@ export function useMint(
   const { connection } = useConnection()
 
   const { data, error } = useQuery({
+    enabled: Boolean(address),
     placeholderData: opts?.placeholderData,
     queryFn: async (): Promise<spl.Mint | undefined> => {
       if (!address) return undefined
@@ -28,7 +29,6 @@ export function useMint(
         return mint
       }
     },
-    enabled: Boolean(address),
     queryKey: ["useMint", address],
     refetchInterval: opts?.refetchInterval,
     refetchIntervalInBackground: opts?.refetchIntervalInBackground,

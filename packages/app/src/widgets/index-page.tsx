@@ -17,6 +17,16 @@ function getCluster(rpc: string) {
   return getMoniker(rpc)
 }
 
+function setPublicKey(publicKey: string) {
+  let pk
+  try {
+    pk = new web3.PublicKey(publicKey)
+  } catch (e: unknown) {
+    return null
+  }
+  return pk
+}
+
 export default function IndexPage() {
   const { connection } = useConnection()
   const { setNotification } = useNotificationContext()
@@ -47,8 +57,8 @@ export default function IndexPage() {
   return (
     <>
       <Pattern />
-      <div className="prose py-2 dark:prose-invert">
-        <div className="container flex justify-center">
+      <div className="prose flex justify-center py-2 dark:prose-invert">
+        <div className="container max-w-[440px]">
           <TokenUpgrade
             escrow={escrow?.toString()}
             onUpgradeStart={() => _log("Upgrading token")}
@@ -76,7 +86,12 @@ export default function IndexPage() {
               name="tokenAddress"
               label="Token address"
               onChange={(e) => {
-                setToken(new web3.PublicKey(e.target.value.trim()))
+                const pk = setPublicKey(e.target.value.trim())
+                if (pk === null) {
+                  setNotification({ message: "Invalid address" })
+                } else {
+                  setToken(pk)
+                }
               }}
               placeholder="Paste here token address to update"
             />
@@ -87,7 +102,12 @@ export default function IndexPage() {
               name="token2022Address"
               label="Token Extension address"
               onChange={(e) => {
-                setTokenExt(new web3.PublicKey(e.target.value.trim()))
+                const pk = setPublicKey(e.target.value.trim())
+                if (pk === null) {
+                  setNotification({ message: "Invalid address" })
+                } else {
+                  setTokenExt(pk)
+                }
               }}
               placeholder="Paste here token address to update"
             />
@@ -98,7 +118,12 @@ export default function IndexPage() {
               name="escrow"
               label="Escrow address"
               onChange={(e) => {
-                setEscrow(new web3.PublicKey(e.target.value.trim()))
+                const pk = setPublicKey(e.target.value.trim())
+                if (pk === null) {
+                  setNotification({ message: "Invalid address" })
+                } else {
+                  setEscrow(pk)
+                }
               }}
               placeholder="Paste here token address to update"
             />

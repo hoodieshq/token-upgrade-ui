@@ -15,10 +15,19 @@ export async function sendAndConfirmTransaction(
   connection: web3.Connection,
   tx: web3.Transaction,
   payer: web3.PublicKey,
-  signers: web3.Keypair[],
+  signers: web3.Signer[],
 ) {
   let t9n = await enrichTxWithRecentInfo(connection, tx, payer)
   const sig = await web3.sendAndConfirmTransaction(connection, t9n, signers)
 
   return sig
+}
+
+/**
+ *  Converting uiAmount to the number of lamports.
+ */
+export function fromUiAmount(uiAmount: number, decimals: number) {
+  const result = (1e10 * uiAmount * Math.pow(10, decimals)) / 1e10
+
+  return Math.floor(result)
 }

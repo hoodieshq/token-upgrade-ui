@@ -8,6 +8,10 @@ const upgradeTokenInstructionData = 1
 
 type Signer = { pubkey: web3.PublicKey; isSigner: boolean; isWritable: boolean }
 
+/**
+ *  Create a transaction to upgrade a token
+ *
+ */
 export async function upgradeToken(
   connection: web3.Connection,
   holder: web3.PublicKey,
@@ -18,7 +22,7 @@ export async function upgradeToken(
   upgradeProgramId: web3.PublicKey,
   destination?: web3.PublicKey,
 ): Promise<[web3.Transaction, web3.Signer[]]> {
-  const originalMint = await spl.getMint(connection, oldToken)
+  log(`Upgrading ${amount} of ${oldToken}`)
 
   /// Anciliary creation
   //  Store N amount of token to upgrade
@@ -47,6 +51,19 @@ export async function upgradeToken(
     spl.ASSOCIATED_TOKEN_PROGRAM_ID,
   )
 
+  const originalAccount = await spl.getAccount(connection, holderATA)
+
+  const originalAmount = Number(originalAccount.amount)
+  if (originalAmount < amount) {
+    throw new Error("Insufficient amount of token")
+  }
+
+  /// Checking that upgrade is for full amount of token
+  let shouldCloseOriginalATA = false
+  if (originalAmount === amount) {
+    shouldCloseOriginalATA = true
+  }
+
   /// Calculating minimal rent
   //
   const mintAccountRentExtemption =
@@ -72,7 +89,7 @@ export async function upgradeToken(
       holderATA,
       anciliaryAccountKeypair.publicKey,
       holder,
-      amount * Math.pow(10, originalMint.decimals),
+      amount,
     ),
     // Create associated account if needed
     spl.createAssociatedTokenAccountIdempotentInstruction(
@@ -100,11 +117,21 @@ export async function upgradeToken(
     ),
   ]
 
+  if (shouldCloseOriginalATA) {
+    instructions.push(
+      spl.createCloseAccountInstruction(holderATA, holder, holder),
+    )
+  }
+
   const exchangeTx = new web3.Transaction().add(...instructions)
 
   return [exchangeTx, [anciliaryAccountKeypair]]
 }
 
+/**
+ *  Construnct a UpgradeToken instrunction
+ *
+ */
 export function createUpgradeTokenInstruction(
   originalAccount: web3.PublicKey,
   originalMint: web3.PublicKey,
@@ -125,8 +152,6 @@ export function createUpgradeTokenInstruction(
     ],
     programId,
   )
-
-  log(`Escrow authority: ${escrowAuthority}`)
 
   let keys = [
     { pubkey: originalAccount, isSigner: false, isWritable: true },

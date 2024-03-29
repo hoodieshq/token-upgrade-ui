@@ -1,0 +1,15 @@
+[features]
+seeds = false
+skip-lint = false
+[programs.devnet]
+token_upgrade = "GHscxHuEzVwEiEqu2WQ9FLww72hQzYxhVp3i2ncJJp5"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "ava tests/ --timeout 99s"

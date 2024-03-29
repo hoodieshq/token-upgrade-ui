@@ -39,23 +39,46 @@ const notificationStory = {
 export default notificationStory
 
 export const Default: StoryObj<React.ComponentProps<typeof Notification>> = {
-  args: {},
+  parameters: {
+    docs: {
+      source: {
+        type: "code",
+        code: `
+<NotificationProvider
+  onInspect={({ link }) => {}}
+  swipeDirection="right"
+>
+  <Inner />
+</NotificationProvider>
+
+function Inner() {
+  const { setNotification } = useNotificationContext()
+  return (
+    <button
+      onClick={() => setNotification({ message: "text", link: "https://example.com" })}
+    >
+      Show toast
+    </button>
+  )
+}
+`,
+      },
+    },
+  },
   render: () => {
     const { setNotification } = useNotificationContext()
 
     return (
-      <>
-        <button
-          type="button"
-          role="button"
-          className="ml-3 rounded-md bg-white text-sm font-medium"
-          onClick={() => {
-            setNotification({ message: "Notification text" })
-          }}
-        >
-          Show Notification
-        </button>
-      </>
+      <button
+        type="button"
+        role="button"
+        className="ml-3 rounded-md bg-white text-sm font-medium"
+        onClick={() => {
+          setNotification({ message: "Notification text" })
+        }}
+      >
+        Show Notification
+      </button>
     )
   },
   async play({ canvasElement, step }: any) {

@@ -3,8 +3,12 @@ import { upgradeToken } from "./upgrade/index"
 import { useConnection } from "@solana/wallet-adapter-react"
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { useWallet } from "@solana/wallet-adapter-react"
-import { enrichTxWithRecentInfo } from "./transaction"
+import { enrichTxWithRecentInfo, fromUiAmount } from "./transaction"
 
+/**
+ *  Upgrades a token
+ *
+ */
 export function useTokenUpgrade() {
   const { connection } = useConnection()
   const { wallet } = useWallet()
@@ -12,6 +16,7 @@ export function useTokenUpgrade() {
 
   async function mutationFn({
     amount,
+    decimals,
     destination,
     escrow,
     newAddress,
@@ -19,17 +24,19 @@ export function useTokenUpgrade() {
     upgradeProgramId,
   }: {
     amount?: number
+    decimals?: number
     destination?: string
     escrow?: string
     newAddress?: string
     originalAddress?: string
     upgradeProgramId?: string
   }): Promise<web3.TransactionSignature> {
-    if (!upgradeProgramId) throw new Error("Absent upgrade program id")
-    if (!originalAddress) throw new Error("Absent original address")
-    if (!newAddress) throw new Error("Absent new address")
-    if (!escrow) throw new Error("Absent escrow address")
     if (!amount || amount <= 0) throw new Error("Wrong amount")
+    if (!decimals) throw new Error("Absent mint")
+    if (!escrow) throw new Error("Absent escrow address")
+    if (!newAddress) throw new Error("Absent new address")
+    if (!originalAddress) throw new Error("Absent original address")
+    if (!upgradeProgramId) throw new Error("Absent upgrade program id")
     if (!wallet?.adapter.publicKey) throw new Error("Wallet not connected")
 
     const [transaction, signers] = await upgradeToken(
@@ -38,7 +45,7 @@ export function useTokenUpgrade() {
       new web3.PublicKey(originalAddress),
       new web3.PublicKey(newAddress),
       new web3.PublicKey(escrow),
-      Number(amount),
+      fromUiAmount(amount, decimals),
       new web3.PublicKey(upgradeProgramId),
       destination ? new web3.PublicKey(destination) : undefined,
     )
@@ -61,9 +68,9 @@ export function useTokenUpgrade() {
 
   const mutation = useMutation({
     mutationFn,
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       client.invalidateQueries({
-        queryKey: ["useTokenBalance", variables.originalAddress],
+        predicate: (query) => query.queryKey[0] === "useTokenBalance",
       })
     },
   })
