@@ -8,6 +8,10 @@ const upgradeTokenInstructionData = 1
 
 type Signer = { pubkey: web3.PublicKey; isSigner: boolean; isWritable: boolean }
 
+/**
+ *  Create a transaction to upgrade a token
+ *
+ */
 export async function upgradeToken(
   connection: web3.Connection,
   holder: web3.PublicKey,
@@ -124,6 +128,10 @@ export async function upgradeToken(
   return [exchangeTx, [anciliaryAccountKeypair]]
 }
 
+/**
+ *  Construnct a UpgradeToken instrunction
+ *
+ */
 export function createUpgradeTokenInstruction(
   originalAccount: web3.PublicKey,
   originalMint: web3.PublicKey,
@@ -144,8 +152,6 @@ export function createUpgradeTokenInstruction(
     ],
     programId,
   )
-
-  log(`Escrow authority: ${escrowAuthority}`)
 
   let keys = [
     { pubkey: originalAccount, isSigner: false, isWritable: true },

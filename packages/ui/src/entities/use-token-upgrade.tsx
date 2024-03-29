@@ -5,6 +5,10 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { enrichTxWithRecentInfo, fromUiAmount } from "./transaction"
 
+/**
+ *  Upgrades a token
+ *
+ */
 export function useTokenUpgrade() {
   const { connection } = useConnection()
   const { wallet } = useWallet()

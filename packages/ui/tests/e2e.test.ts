@@ -16,6 +16,25 @@ import {
   sendAndConfirmTransaction,
 } from "../src/entities/transaction"
 
+/**
+ *  Token Upgrade flow
+ *
+ *  Prerequisites:
+ *  - Instance of "token-upgrade" program at the cluster
+ *  - ["spl-token-program"](https://github.com/solana-labs/solana-program-library/tree/master/token-upgrade/cli) should use correct token-upgrade program's address
+ *  - Wallet with enough SOL. Scenario will use default `id.json` wallet. You can airdrop ([one]https://spl.solana.com/token#airdrop-solu(https://spl.solana.com/token#airdrop-sol), [two](https://solana.com/developers/guides/getstarted/solana-token-airdrop-and-faucets#1-solana-airdrop)) some SOL on devent or testnet.
+ *
+ *  Example:
+ *  ```sh
+ *  $ ls -d *
+ *  solana-program-library    token-upgade-ui
+ *
+    $ SOLANA_TOKEN_UPGRADE_CLI=$(pwd)/../solana-program-library/target/debug/spl-token-upgrade\
+     TOKEN_UPGRADE_PROGRAM_ID=GHscxHuEzVwEiEqu2WQ9FLww72hQzYxhVp3i2ncJJp5\
+     pnpm --filter "@solana/*ui" local:test-e2e
+ *  ```
+ */
+
 const log = Debug("debug:token-upgrade-ui:e2e")
 
 const SOLANA_TOKEN_UPGRADE_CLI =
@@ -174,24 +193,6 @@ async function premintTokens(
   }
 }
 
-/**
- *  Token Upgrade flow
- *
- *  Prerequisites:
- *  - Instance of "token-upgrade" program at the cluster
- *  - ["spl-token-program"](https://github.com/solana-labs/solana-program-library/tree/master/token-upgrade/cli) should use correct token-upgrade program's address
- *  - Wallet with enough SOL. Scenario will use default `id.json` wallet. You can airdrop ([one]https://spl.solana.com/token#airdrop-solu(https://spl.solana.com/token#airdrop-sol), [two](https://solana.com/developers/guides/getstarted/solana-token-airdrop-and-faucets#1-solana-airdrop)) some SOL on devent or testnet.
- *
- *  Example:
- *  ```sh
- *  $ ls -d *
- *  solana-program-library    token-upgade-ui
- *
-    $ SOLANA_TOKEN_UPGRADE_CLI=$(pwd)/../solana-program-library/target/debug/spl-token-upgrade\
-     TOKEN_UPGRADE_PROGRAM_ID=GHscxHuEzVwEiEqu2WQ9FLww72hQzYxhVp3i2ncJJp5\
-     pnpm --filter "@solana/*ui" local:test-e2e
- *  ```
- */
 test("should deny upgrading on insufficient amount of tokens", async (t: any) => {
   // init cluster
   anchor.setProvider(anchor.AnchorProvider.env())

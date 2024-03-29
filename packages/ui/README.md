@@ -8,7 +8,7 @@ To run Smoke-tests properly, there should be an active Storybook instance runnin
 
 Due to that, `concurrently` is used to run Storybook's instance and test-suite in parallel. The trick here is to "interrupt" active Storybook's instance upon test completion by port number.
 
-```shell
+```sh
 $ pnpm run ci:sb
 # launch Storybook on default(6006) port
 
