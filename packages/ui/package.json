@@ -31,8 +31,7 @@
     "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "",
-    "_test": "ava src/** --timeout 60s --verbose",
+    "test": "vitest ./src/__tests__/** -- --bail",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
@@ -74,7 +73,6 @@
     "@storybook/test": "^7.6.17",
     "@storybook/test-runner": "^0.16.0",
     "@storybook/testing-library": "^0.2.2",
-    "ava": "^6.1.2",
     "axe-playwright": "^2.0.1",
     "concurrently": "^8.2.2",
     "eslint-plugin-storybook": "^0.8.0",
@@ -86,22 +84,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
-    "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
     "tsx": "^4.7.1",
+    "vitest": "^1.4.0",
     "wait-on": "^7.2.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module",
-      "mts": "module"
-    },
-    "nodeArguments": [
-      "--loader=ts-node/esm"
-    ]
   }
 }

@@ -6,8 +6,6 @@ import fs from "node:fs";
 //@ts-ignore
 import path from "node:path";
 
-const log = console.log.bind(console);
-
 function readJSONSync(pathToFile: string) {
   const pathToJSON = path.resolve(pathToFile);
   const buffer = fs.readFileSync(pathToJSON, "utf8");
@@ -51,7 +49,7 @@ export function spawnSubcommandSync(command: string, _args?: string[]) {
     process.exit(1);
   }
 
-  log("|>", stdout.toString());
+  // console.log("|>", stdout.toString());
 
   return [status, stdout.toString()];
 }
