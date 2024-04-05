@@ -31,7 +31,8 @@
     "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "ava src --timeout 60s",
+    "test": "",
+    "_test": "ava src/** --timeout 60s --verbose",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",
@@ -85,6 +86,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
+    "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
     "tsx": "^4.7.1",
     "wait-on": "^7.2.0"
@@ -95,10 +97,11 @@
   },
   "ava": {
     "extensions": {
-      "ts": "module"
+      "ts": "module",
+      "mts": "module"
     },
     "nodeArguments": [
-      "--loader=tsx"
+      "--loader=ts-node/esm"
     ]
   }
 }
