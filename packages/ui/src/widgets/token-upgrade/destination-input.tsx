@@ -9,7 +9,7 @@ interface DestinationInputProps
 
 export default function DestinationInput({
   className,
-  label = "Destination",
+  label = "Address",
   name = "destination",
   onFieldChange,
   placeholder = "Enter base-58 wallet address",

@@ -112,7 +112,7 @@ export function TokenUpgradeBase({
 
   const error = useMemo(() => {
     if (balance?.decimals === -1)
-      return new Error("Wallet does not hold a token")
+      return new Error("Wallet does not hold the token")
     return undefined
   }, [balance])
 

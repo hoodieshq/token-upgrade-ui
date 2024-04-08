@@ -14,7 +14,7 @@ export default forwardRef<HTMLDivElement, CheckProps>(function Check(
     className,
     defaultChecked,
     id = "c1",
-    label = "Change destination",
+    label = "Send to another address",
     onCheckedChange,
     ...props
   },
