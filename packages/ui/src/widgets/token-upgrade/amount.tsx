@@ -10,19 +10,27 @@ const inputVariants = cva(
     variants: {
       variant: {
         disabled: "pointer-events-none pl-10 px-1.5 rounded-md",
-        regular: "pl-10 pr-14 rounded-md",
-        active: "pl-1 pr-14 rounded-none rounded-r-md",
+        regular: "pl-10 pr-20 rounded-md",
+        active: "pl-1 pr-20 rounded-none rounded-r-md",
       },
-      err: {
+      valid: {
         false:
           "text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600",
         true: "text-red-900 ring-1 ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500",
       },
     },
+    compoundVariants: [
+      {
+        variant: "disabled",
+        //@ts-expect-error suppress strange `boolean | boolena[], null | undefined` ts warning
+        valid: "true",
+        class: "pr-20",
+      },
+    ],
     defaultVariants: {
       variant: "regular",
-      //@ts-expect-error weird
-      err: "false",
+      //@ts-expect-error suppress strange `boolean | boolena[], null | undefined` ts warning
+      valid: "false",
     },
   },
 )
@@ -89,12 +97,12 @@ export default function Amount({
 
   if (disabled) variants = { variant: "disabled" }
   if (hasBalance) variants = { variant: "active" }
-  if (hasError) variants = { ...variants, err: "true" }
+  if (hasError) variants = { ...variants, valid: "true" }
 
   const displaySymbol = useMemo(() => {
     let s = symbol
     if (!s && address && address.length > 3) {
-      s = `${address.slice(0, 2)}..${address.slice(-1)}`
+      s = `${address.slice(0, 3)}..${address.slice(-3)}`
     } else if (!s && address && address?.length <= 3) {
       s = address
     }
@@ -153,7 +161,7 @@ export default function Amount({
             />
           </Form.Control>
           {displaySymbol ? (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono">
               <span className="text-violet11 sm:text-sm">{displaySymbol}</span>
             </div>
           ) : null}

@@ -33,6 +33,7 @@ export default function Destination({
               defaultChecked={customDestination}
               onCheckedChange={onChange}
               aria-label="toggle-destination"
+              disabled={props.disabled}
             />
           </Form.Control>
         </div>

@@ -116,7 +116,7 @@ export function TokenUpgradeBase({
     return undefined
   }, [balance])
 
-  const isAmountDisabled = useMemo(() => {
+  const isInputDisabled = useMemo(() => {
     return !wallet || !tokenAddress || Boolean(error)
   }, [tokenAddress, error, wallet])
 
@@ -136,7 +136,7 @@ export function TokenUpgradeBase({
             <Amount
               address={tokenAddress}
               balance={balance?.uiAmountString}
-              disabled={isAmountDisabled}
+              disabled={isInputDisabled}
               error={error}
               onAmountChange={onAmountChange}
               onAmountMaxChange={onAmountChange}
@@ -147,7 +147,10 @@ export function TokenUpgradeBase({
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="destination">
-            <Destination onDestinationChange={onDestinationChange} />
+            <Destination
+              disabled={isInputDisabled}
+              onDestinationChange={onDestinationChange}
+            />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"
