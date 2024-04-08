@@ -12,7 +12,7 @@ export default function DestinationInput({
   label = "Destination",
   name = "destination",
   onFieldChange,
-  placeholder = "Enter base-58 address",
+  placeholder = "Enter base-58 wallet address",
   ...props
 }: DestinationInputProps) {
   return (
