@@ -9,7 +9,7 @@ export function Layout({ children }: React.PropsWithChildren) {
       <div className="h-full">
         <motion.header
           layoutScroll
-          className="contents lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex"
+          className="contents lg:inset-0 lg:z-40 lg:flex"
         >
           <Header />
         </motion.header>
