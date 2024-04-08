@@ -1,7 +1,7 @@
-import clsx from "clsx"
 import { cva } from "class-variance-authority"
 import { forwardRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { twJoin, twMerge } from "tailwind-merge"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
 
 const motionInner = cva(
@@ -21,7 +21,7 @@ const motionInner = cva(
 
 export const Header = forwardRef<
   React.ElementRef<"div">,
-  { className?: string }
+  React.ComponentPropsWithRef<"div">
 >(function Header({ className }, ref) {
   let { scrollY } = useScroll()
   let bgOpacityLight = useTransform(scrollY, [0, 72], [0.5, 0.9])
@@ -30,7 +30,7 @@ export const Header = forwardRef<
   return (
     <motion.div
       ref={ref}
-      className={clsx(
+      className={twMerge(
         className,
         motionInner({ backdrop: "blur", bg: "opaque" }),
       )}
@@ -42,7 +42,7 @@ export const Header = forwardRef<
       }
     >
       <div
-        className={clsx(
+        className={twJoin(
           "absolute inset-x-0 top-full h-px transition",
           "bg-zinc-900/7.5 dark:bg-white/7.5",
         )}

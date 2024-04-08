@@ -2,7 +2,7 @@ import * as anchor from "@project-serum/anchor"
 import * as spl from "@solana/spl-token"
 import * as web3 from "@solana/web3.js"
 import Debug from "debug"
-import test from "ava"
+import { expect, test } from "vitest"
 import { homedir } from "node:os"
 import {
   keypairFromJSON,
@@ -37,6 +37,7 @@ import {
 
 const log = Debug("debug:token-upgrade-ui:e2e")
 
+const CLUSTER_URL = process.env.CLUSTER_URL
 const SOLANA_TOKEN_UPGRADE_CLI =
   process.env.SOLANA_TOKEN_UPGRADE_CLI ?? "spl-token-upgrade"
 const TOKEN_UPGRADE_PROGRAM_ID = process.env.TOKEN_UPGRADE_PROGRAM_ID
@@ -50,6 +51,27 @@ type Owner = {
 
 function toOwner(payer: web3.Keypair): Owner {
   return { payer, publicKey: payer.publicKey }
+}
+
+function initEnvironment() {
+  /// prevent to initialize the environment for tests
+  //  been run with custom cluster instance
+  if (!CLUSTER_URL) {
+    anchor.setProvider(anchor.AnchorProvider.env())
+  }
+}
+
+function getConnection(
+  moniker: web3.Cluster,
+  commitment: web3.Commitment = "confirmed",
+) {
+  const endpoint = CLUSTER_URL || web3.clusterApiUrl(moniker)
+
+  log(`Establish connection to ${endpoint}`)
+
+  const connection = new web3.Connection(endpoint, commitment)
+
+  return connection
 }
 
 async function transferToken(
@@ -86,10 +108,7 @@ async function premintTokens(
   if (!TOKEN_UPGRADE_PROGRAM_ID)
     throw new Error("TOKEN_UPGRADE_PROGRAM_ID is not set")
 
-  log({
-    SOLANA_TOKEN_UPGRADE_CLI,
-    TOKEN_UPGRADE_PROGRAM_ID,
-  })
+  log("%O", { SOLANA_TOKEN_UPGRADE_CLI, TOKEN_UPGRADE_PROGRAM_ID })
 
   const { publicKey: holder } = ho1dr
 
@@ -193,9 +212,9 @@ async function premintTokens(
   }
 }
 
-test("should deny upgrading on insufficient amount of tokens", async (t: any) => {
+test("should deny upgrading on insufficient amount of tokens", async () => {
   // init cluster
-  anchor.setProvider(anchor.AnchorProvider.env())
+  initEnvironment()
 
   if (!WALLET_JSON_PATH) throw new Error("WALLET_JSON_PATH is not provider")
 
@@ -209,8 +228,7 @@ test("should deny upgrading on insufficient amount of tokens", async (t: any) =>
   const decimals = 9
   const moniker = "devnet"
 
-  const endpoint = web3.clusterApiUrl(moniker)
-  const connection = new web3.Connection(endpoint, "confirmed")
+  const connection = getConnection(moniker)
 
   await transferToken(connection, owner, ho1dr)
 
@@ -218,25 +236,22 @@ test("should deny upgrading on insufficient amount of tokens", async (t: any) =>
   const { token, tokenExt, escrowAccount, tokenUpgradeProgramId } =
     await premintTokens(connection, owner, ho1dr, amount, decimals)
 
-  await t.throwsAsync(
-    async () => {
-      await upgradeToken(
-        connection,
-        holder.publicKey,
-        token.mint,
-        tokenExt.mint,
-        escrowAccount,
-        amount * 2, // Ask to update more than was minted
-        tokenUpgradeProgramId,
-      )
-    },
-    { message: "Insufficient amount of token" },
-  )
+  expect(() => {
+    return upgradeToken(
+      connection,
+      holder.publicKey,
+      token.mint,
+      tokenExt.mint,
+      escrowAccount,
+      amount * 2, // Ask to update more than was minted
+      tokenUpgradeProgramId,
+    )
+  }).rejects.toThrow(/Insufficient amount of token/)
 })
 
-test("should upgrade token partially", async (t: any) => {
+test("should upgrade token partially", async () => {
   // init cluster
-  anchor.setProvider(anchor.AnchorProvider.env())
+  initEnvironment()
 
   if (!WALLET_JSON_PATH) throw new Error("WALLET_JSON_PATH is not provider")
 
@@ -250,8 +265,7 @@ test("should upgrade token partially", async (t: any) => {
   const decimals = 9
   const moniker = "devnet"
 
-  const endpoint = web3.clusterApiUrl(moniker)
-  const connection = new web3.Connection(endpoint, "confirmed")
+  const connection = getConnection(moniker)
 
   await transferToken(connection, owner, ho1dr)
 
@@ -301,17 +315,17 @@ test("should upgrade token partially", async (t: any) => {
   )
 
   // Token account should contain proper amount of tokens
-  t.is(Number(holderTokenExtAccount.amount), 500)
+  expect(Number(holderTokenExtAccount.amount)).toEqual(500)
 
   // Anciliary account should be closed
-  await t.throwsAsync(spl.getAccount(connection, signers[0].publicKey), {
-    any: true,
-  })
+  await expect(
+    spl.getAccount(connection, signers[0].publicKey),
+  ).rejects.toStrictEqual(new spl.TokenAccountNotFoundError())
 })
 
 test("should upgrade all the amount", async (t: any) => {
   // init cluster
-  anchor.setProvider(anchor.AnchorProvider.env())
+  initEnvironment()
 
   if (!WALLET_JSON_PATH) throw new Error("WALLET_JSON_PATH is not provider")
 
@@ -325,8 +339,7 @@ test("should upgrade all the amount", async (t: any) => {
   const decimals = 9
   const moniker = "devnet"
 
-  const endpoint = web3.clusterApiUrl(moniker)
-  const connection = new web3.Connection(endpoint, "confirmed")
+  const connection = getConnection(moniker)
 
   await transferToken(connection, owner, ho1dr)
 
@@ -381,15 +394,15 @@ test("should upgrade all the amount", async (t: any) => {
   )
 
   // Token account should contain proper amount of tokens
-  t.is(Number(holderTokenExtAccount.amount), 1000)
+  expect(Number(holderTokenExtAccount.amount)).toEqual(1000)
 
   // Anciliary account should be closed
-  await t.throwsAsync(spl.getAccount(connection, signers[0].publicKey), {
-    any: true,
-  })
+  expect(() => {
+    return spl.getAccount(connection, signers[0].publicKey)
+  }).rejects.toStrictEqual(new spl.TokenAccountNotFoundError())
 
   // Original associated token account should be closed
-  await t.throwsAsync(spl.getAccount(connection, holderAccount.address), {
-    any: true,
-  })
+  expect(() => {
+    return spl.getAccount(connection, holderAccount.address)
+  }).rejects.toStrictEqual(new spl.TokenAccountNotFoundError())
 })

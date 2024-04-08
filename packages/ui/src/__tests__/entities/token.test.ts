@@ -1,15 +1,9 @@
 import { nativeToUiAmount } from "../../entities/token/index"
-import test from "ava"
+import { expect, test } from "vitest"
 
-test("should convert properly", (t) => {
-  t.deepEqual(nativeToUiAmount(1e9), {
-    uiAmount: 1,
-    uiAmountString: "1.000000000",
-  })
-  t.deepEqual(nativeToUiAmount(1283782348), {
-    uiAmount: 1.283782348,
-    uiAmountString: "1.283782348",
-  })
-
-  t.pass()
+test("should convert properly", () => {
+  expect(nativeToUiAmount(1e9).uiAmount).toEqual(1)
+  expect(nativeToUiAmount(1e9).uiAmountString).toEqual("1.000000000")
+  expect(nativeToUiAmount(1283782348).uiAmount).toEqual(1.283782348)
+  expect(nativeToUiAmount(1283782348).uiAmountString).toEqual("1.283782348")
 })
