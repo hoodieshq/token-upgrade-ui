@@ -57,8 +57,8 @@ export default function IndexPage() {
         </div>
       </div>
 
-      <div className="prose flex justify-center py-2 dark:prose-invert light:text-black dark:text-white">
-        <div className="container max-w-[440px] flex flex-col items-center justify-center py-2">
+      <div className="light:text-black prose flex justify-center py-2 dark:prose-invert dark:text-white">
+        <div className="container flex max-w-[440px] flex-col items-center justify-center py-2">
           <ChangeCluster className="min-w-80 pb-1.5 pt-2.5" />
         </div>
       </div>
