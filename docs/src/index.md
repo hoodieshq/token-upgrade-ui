@@ -12,7 +12,7 @@ It demonstrates how to integrate the [`TokenUpgrade`](https://github.com/hoodies
 
 Use the button down here to launch it on [Vercel](https://vercel.com).
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhoodieshq%2Ftoken-upgrade-ui&env=NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID&envDescription=Upgrade%20Program%20Address%20Variables&env=NEXT_PUBLIC_ESCROW_AUTHY_ADDRESS&env=NEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS&env=NEXT_PUBLIC_TARGET_TOKEN_ADDRESS&project-name=solana-token-upgrade-app&repository-name=solana-token-upgrade-app&demo-title=Token%20Upgrade%20UI&demo-description=App%20to%20Upgrade%20Token%20on%20Solana%20Blockchain)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhoodieshq%2Ftoken-upgrade-ui&env=NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID&envDescription=Upgrade%20Program%20Address%20Variables&env=NEXT_PUBLIC_ESCROW_AUTHY_ADDRESS&env=NEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS&env=NEXT_PUBLIC_TARGET_TOKEN_ADDRESS&root-directory=packages%2Fapp&project-name=solana-token-upgrade-app&repository-name=solana-token-upgrade-app&demo-title=Token%20Upgrade%20UI&demo-description=App%20to%20Upgrade%20Token%20on%20Solana%20Blockchain)
 
 Bear in mind it will require some configuration:
 
