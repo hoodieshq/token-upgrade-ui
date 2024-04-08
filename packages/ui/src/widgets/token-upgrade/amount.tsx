@@ -31,8 +31,8 @@ const inputVariants = cva(
       {
         variant: "active",
         data: "present",
-        class: "!pl-1"
-      }
+        class: "!pl-1",
+      },
     ],
     defaultVariants: {
       data: "absent",
@@ -113,8 +113,6 @@ export default function Amount({
 
     return variants
   }, [disabled, hasBalance, hasError, address])
-
-  console.log({amountPossible})
 
   const displaySymbol = useMemo(() => {
     let s = symbol
