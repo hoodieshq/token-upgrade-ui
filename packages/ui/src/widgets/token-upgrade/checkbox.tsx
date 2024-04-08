@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react"
-import clsx from "clsx"
 import * as Checkbox from "@radix-ui/react-checkbox"
 import { CheckIcon } from "@radix-ui/react-icons"
+import { twMerge } from "tailwind-merge"
 
 interface CheckProps extends React.ComponentProps<typeof Checkbox.Root> {
   defaultChecked?: Checkbox.CheckedState
@@ -21,7 +21,7 @@ export default forwardRef<HTMLDivElement, CheckProps>(function Check(
   forwardRef,
 ) {
   return (
-    <div className={clsx(className, "flex items-center")} ref={forwardRef}>
+    <div className={twMerge(className, "flex items-center")} ref={forwardRef}>
       <div className="min-w-0 flex-1 text-sm leading-6">
         <label htmlFor={id} className="font-medium text-gray-900">
           {label}

@@ -1,7 +1,7 @@
-import clsx from "clsx"
 import React, { FC } from "react"
 import { Wallet } from "@solana/wallet-adapter-react"
 import { WalletName } from "@solana/wallet-adapter-base"
+import { twMerge } from "tailwind-merge"
 
 type ButtonProps = React.PropsWithChildren<{
   "aria-label"?: string
@@ -74,7 +74,7 @@ export function WalletButton({
   return (
     <Button
       {...props}
-      className={clsx("wallet-adapter-button-trigger", className)}
+      className={twMerge("wallet-adapter-button-trigger", className)}
       startIcon={
         walletIcon && walletName ? (
           <WalletIcon

@@ -1,12 +1,12 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
-import clsx from "clsx"
 import Debug from "debug"
 import Destination from "./token-upgrade/destination"
 import React, { useCallback, useMemo } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
+import { twMerge } from "tailwind-merge"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
@@ -116,7 +116,7 @@ export function TokenUpgradeBase({
 
   return (
     <Form.Root
-      className={clsx(
+      className={twMerge(
         className,
         "flex min-w-80 flex-col overflow-hidden rounded-lg bg-white shadow",
       )}
@@ -145,7 +145,7 @@ export function TokenUpgradeBase({
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"
-            disabled={!isAllowedUpgrade}
+            isAllowedUpgrade={isAllowedUpgrade}
             onClick={onTokenUpgrade}
           />
         </Container>

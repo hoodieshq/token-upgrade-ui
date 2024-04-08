@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
-import clsx from "clsx"
+import { twJoin } from "tailwind-merge"
 
 // FEAT: adjust right padding according the symbol present
 const inputVariants = cva(
@@ -111,9 +111,10 @@ export default function Amount({
         {label}
       </label>
       <div
-        className={clsx("mt-2 flex rounded-md shadow-sm", {
-          "mb-[22px]": !hasBalance && !hasError,
-        })}
+        className={twJoin(
+          "mt-2 flex rounded-md shadow-sm",
+          !hasBalance && !hasError && "mb-[22px]",
+        )}
       >
         {hasBalance && (
           <button

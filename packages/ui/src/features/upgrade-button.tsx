@@ -1,38 +1,44 @@
-import clsx from "clsx"
 import React from "react"
 import { BaseWalletConnectButton } from "./upgrade-button/base-wallet-connect-button"
 import { BaseWalletSelectButton } from "./upgrade-button/base-wallet-select-button"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { Button } from "../shared/button"
+import { twMerge } from "tailwind-merge"
+import { useWallet } from "@solana/wallet-adapter-react"
 
-interface UpgradeButtonProps extends React.ComponentPropsWithoutRef<"button"> {}
+interface UpgradeButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+  isAllowedUpgrade?: boolean
+}
 
-export function UpgradeButton({ className, ...props }: UpgradeButtonProps) {
+export function UpgradeButton({
+  className,
+  isAllowedUpgrade,
+  ...props
+}: UpgradeButtonProps) {
   const { connected, wallet } = useWallet()
   const noWallet = !Boolean(wallet)
 
   return (
     <div
-      className={clsx(
-        {
-          "[&_.wallet-adapter-dropdown]:w-[100%]": noWallet,
-        },
+      className={twMerge(
         className,
+        noWallet && "[&_.wallet-adapter-dropdown]:w-[100%]",
       )}
     >
       {connected ? (
-        <Button className="h-[48px] w-[100%]" {...props}>
+        <Button
+          className="h-[48px] w-[100%]"
+          disabled={!isAllowedUpgrade}
+          {...props}
+        >
           Upgrade Token
         </Button>
       ) : noWallet ? (
-        <>
-          <BaseWalletSelectButton
-            aria-label="Select Wallet"
-            className="w-[100%] justify-center"
-            role="button"
-            {...props}
-          />
-        </>
+        <BaseWalletSelectButton
+          aria-label="Select Wallet"
+          className="w-[100%] justify-center"
+          role="button"
+          {...props}
+        />
       ) : (
         <BaseWalletConnectButton
           className="w-[100%] justify-center"

@@ -56,7 +56,7 @@ export const Default: StoryObj<ComponentPropsWithTestId<typeof TokenUpgrade>> =
       const ctx = within(canvasElement)
 
       await step("should render", async () => {
-        await expect(ctx.getByLabelText("Select Wallet")).toBeDisabled()
+        await expect(ctx.getByLabelText("Select Wallet")).not.toBeDisabled()
         await expect(
           ctx.getByRole("spinbutton", { description: "Amount" }),
         ).toBeDisabled()
