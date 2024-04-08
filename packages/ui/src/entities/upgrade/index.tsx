@@ -54,7 +54,6 @@ export async function upgradeToken(
   const originalAccount = await spl.getAccount(connection, holderATA)
 
   const originalAmount = Number(originalAccount.amount)
-  console.log({ originalAmount, amount }, originalAmount < amount)
   if (originalAmount < amount) {
     throw new Error("Insufficient amount of token")
   }

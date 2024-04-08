@@ -12,4 +12,4 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "vitest ./tests/e2e.test.ts --run --testTimeout 60000"
+test = "vitest ./tests/e2e.test.ts --run --testTimeout 40000 --reporter=basic"

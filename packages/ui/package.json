@@ -31,7 +31,8 @@
     "local:sb-test": "wait-on tcp:127.0.0.1:6006 && pnpm run test-sb && pnpm run local:sb-kill",
     "local:test-smoke": "concurrently --kill-others-on-fail -n \"SB,TEST\" \"pnpm run local:sb\" \"pnpm run local:sb-test\"",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest ./src/__tests__/** -- --bail",
+    "test": "pnpm run test-unit --run",
+    "test-unit": "vitest ./src/__tests__/** --bail=1",
     "test-sb": "test-storybook"
   },
   "browserslist": "defaults, not ie <= 11",

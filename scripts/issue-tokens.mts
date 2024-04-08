@@ -14,6 +14,7 @@ type Owner = {
   publicKey: web3.PublicKey;
 };
 
+const CLUSTER_URL = process.env.CLUSTER_URL;
 const CLUSTER_MONIKER = (process.env.CLUSTER_MONIKER ??
   "devnet") as web3.Cluster;
 const WALLET_ADDRESS =
@@ -23,7 +24,7 @@ const SOLANA_TOKEN_UPGRADE_CLI = process.env.SOLANA_TOKEN_UPGRADE_CLI ?? "spl-to
 if (!WALLET_ADDRESS) throw new Error("Absent wallet");
 
 const connection = new web3.Connection(
-  web3.clusterApiUrl(CLUSTER_MONIKER),
+  CLUSTER_URL || web3.clusterApiUrl(CLUSTER_MONIKER),
   "confirmed",
 );
 
