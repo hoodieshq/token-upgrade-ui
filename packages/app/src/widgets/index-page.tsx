@@ -1,12 +1,11 @@
 import * as web3 from "@solana/web3.js"
-import ChangeCluster from "../features/change-cluster"
-import { Pattern } from "../shared/pattern"
 import {
-  TOKEN_UPGRADE_PROGRAM_ID,
+  ESCROW_AUTHY_ADDRESS,
   ORIGIN_TOKEN_ADDRESS,
   TARGET_TOKEN_ADDRESS,
-  ESCROW_AUTHY_ADDRESS,
+  TOKEN_UPGRADE_PROGRAM_ID,
 } from "../env"
+import { Pattern } from "../shared/pattern"
 import { TokenUpgrade, useNotificationContext } from "@solana/token-upgrade-ui"
 import { useCallback } from "react"
 import { useConnection } from "@solana/wallet-adapter-react"
@@ -54,12 +53,6 @@ export default function IndexPage() {
             tokenExtAddress={TARGET_TOKEN_ADDRESS}
             tokenUpgradeProgramId={TOKEN_UPGRADE_PROGRAM_ID}
           />
-        </div>
-      </div>
-
-      <div className="light:text-black prose flex justify-center py-2 dark:prose-invert dark:text-white">
-        <div className="container flex max-w-[440px] flex-col items-center justify-center py-2">
-          <ChangeCluster className="min-w-80 pb-1.5 pt-2.5" />
         </div>
       </div>
     </>

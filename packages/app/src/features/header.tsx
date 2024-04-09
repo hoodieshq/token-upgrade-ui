@@ -49,9 +49,7 @@ export const Header = forwardRef<
       />
       <div className="flex items-center gap-5">
         <div className="flex gap-4">{}</div>
-        <div className="hidden min-[320px]:contents">
-          <WalletMultiButton />
-        </div>
+        <WalletMultiButton />
       </div>
     </motion.div>
   )

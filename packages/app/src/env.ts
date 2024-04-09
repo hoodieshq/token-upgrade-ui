@@ -1,3 +1,5 @@
+export const CLUSTER_URL = process.env.NEXT_PUBLIC_CLUSTER_URL
+
 export const TOKEN_UPGRADE_PROGRAM_ID =
   process.env.NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID
 
