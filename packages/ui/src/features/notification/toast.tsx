@@ -1,5 +1,5 @@
 import React, { Fragment } from "react"
-import { Transition, TransitionChildProps } from "@headlessui/react"
+import { Transition } from "@headlessui/react"
 
 interface ToastProps {
   link?: string
