@@ -46,7 +46,7 @@ export function NotificationProvider({
     <NotificationContext.Provider
       value={{ message: data?.message, link: data?.link, setNotification }}
     >
-      <Toast.Provider swipeDirection={swipeDirection}>
+      <Toast.Provider duration={12000} swipeDirection={swipeDirection}>
         <div
           aria-live="assertive"
           className="pointer-events-none fixed inset-0 z-50 flex items-end px-4 py-6 sm:items-start sm:p-6"

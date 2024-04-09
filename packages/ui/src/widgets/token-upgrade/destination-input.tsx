@@ -1,5 +1,6 @@
 import React from "react"
 import * as Form from "@radix-ui/react-form"
+import { twJoin } from "tailwind-merge"
 
 interface DestinationInputProps
   extends React.ComponentPropsWithoutRef<"input"> {
@@ -9,10 +10,10 @@ interface DestinationInputProps
 
 export default function DestinationInput({
   className,
-  label = "Destination",
+  label = "Address",
   name = "destination",
   onFieldChange,
-  placeholder = "Enter base-58 address",
+  placeholder = "Enter base-58 wallet address",
   ...props
 }: DestinationInputProps) {
   return (
@@ -37,7 +38,10 @@ export default function DestinationInput({
         >
           <input
             aria-describedby={`${name}-label`}
-            className="block w-full rounded-md border-0 border-violet1 py-1.5 pl-7 pr-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className={twJoin(
+              "block w-full rounded-md border-0 border-violet1 p-1.5 ",
+              "text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+            )}
             id={name}
             name={name}
             placeholder={placeholder}

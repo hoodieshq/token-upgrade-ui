@@ -3,26 +3,41 @@ import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
 import { twJoin } from "tailwind-merge"
 
-// FEAT: adjust right padding according the symbol present
 const inputVariants = cva(
   "block w-full rounded border-0 py-1.5 sm:text-sm sm:leading-6",
   {
     variants: {
-      variant: {
-        disabled: "pointer-events-none pl-10 px-1.5 rounded-md",
-        regular: "pl-10 pr-14 rounded-md",
-        active: "pl-1 pr-14 rounded-none rounded-r-md",
+      data: {
+        absent: "pl-10 pr-1.5",
+        present: "pl-10 pr-20",
       },
-      err: {
-        false:
-          "text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600",
-        true: "text-red-900 ring-1 ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500",
+      variant: {
+        disabled: "pointer-events-none rounded-md",
+        regular: "rounded-md",
+        active: "rounded-none rounded-r-md",
+      },
+      alert: {
+        no: "text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600",
+        error:
+          "text-red-900 ring-1 ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500",
       },
     },
+    compoundVariants: [
+      {
+        variant: "disabled",
+        alert: "error",
+        class: "pr-20",
+      },
+      {
+        variant: "active",
+        data: "present",
+        class: "!pl-1",
+      },
+    ],
     defaultVariants: {
+      data: "absent",
       variant: "regular",
-      //@ts-expect-error weird
-      err: "false",
+      alert: "no",
     },
   },
 )
@@ -56,7 +71,6 @@ export default function Amount({
   value,
   ...props
 }: AmountProps) {
-  let variants = {}
   const hasBalance = balance && Number(balance) > 0
   const hasError = Boolean(error)
   const inpRef = useRef<HTMLInputElement>(null)
@@ -87,14 +101,23 @@ export default function Amount({
     }
   }, [value])
 
-  if (disabled) variants = { variant: "disabled" }
-  if (hasBalance) variants = { variant: "active" }
-  if (hasError) variants = { ...variants, err: "true" }
+  const amountPossible = useMemo(() => {
+    let variants: NonNullable<Parameters<typeof inputVariants>[0]> = {}
+
+    if (address) variants = { ...variants, data: "present" }
+
+    if (hasBalance) variants.variant = "active"
+    if (disabled) variants.variant = "disabled"
+
+    if (hasError) variants = { ...variants, alert: "error" }
+
+    return variants
+  }, [disabled, hasBalance, hasError, address])
 
   const displaySymbol = useMemo(() => {
     let s = symbol
     if (!s && address && address.length > 3) {
-      s = `${address.slice(0, 2)}..${address.slice(-1)}`
+      s = `${address.slice(0, 3)}..${address.slice(-3)}`
     } else if (!s && address && address?.length <= 3) {
       s = address
     }
@@ -138,7 +161,7 @@ export default function Amount({
             <input
               aria-describedby={!hasError ? `${name}-label` : `${name}-error`}
               aria-invalid={hasError ? "true" : "false"}
-              className={inputVariants(variants)}
+              className={inputVariants(amountPossible)}
               disabled={disabled}
               id={name}
               max={balance}
@@ -153,7 +176,7 @@ export default function Amount({
             />
           </Form.Control>
           {displaySymbol ? (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono">
               <span className="text-violet11 sm:text-sm">{displaySymbol}</span>
             </div>
           ) : null}

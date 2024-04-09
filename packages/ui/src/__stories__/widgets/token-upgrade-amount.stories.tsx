@@ -84,7 +84,7 @@ export const WithAddress: Story = {
     const ctx = within(canvasElement)
 
     await step("should show symbol", async () => {
-      const el = ctx.getByText("Ho..Y")
+      const el = ctx.getByText("HoK..jqY")
       await expect(el).toBeVisible()
     })
   },

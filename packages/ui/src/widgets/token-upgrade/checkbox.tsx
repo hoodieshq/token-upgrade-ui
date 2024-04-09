@@ -14,7 +14,7 @@ export default forwardRef<HTMLDivElement, CheckProps>(function Check(
     className,
     defaultChecked,
     id = "c1",
-    label = "Change destination",
+    label = "Send to another address",
     onCheckedChange,
     ...props
   },
@@ -29,7 +29,7 @@ export default forwardRef<HTMLDivElement, CheckProps>(function Check(
       </div>
       <div className="ml-3 flex h-6 items-center">
         <Checkbox.Root
-          className="flex h-[20px] w-[20px] appearance-none items-center justify-center rounded bg-white shadow-[0_1px_4px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_1px_black] dark:border"
+          className="flex h-[20px] w-[20px] appearance-none items-center justify-center rounded bg-white shadow-[0_1px_4px] shadow-blackA4 outline-none focus:shadow-[0_0_0_1px_black] hover:enabled:bg-violet3 dark:border"
           defaultChecked={defaultChecked}
           id={id}
           onCheckedChange={onCheckedChange}

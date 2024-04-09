@@ -12,6 +12,7 @@ import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
 import { withErrorBoundary } from "react-error-boundary"
+import { useWallet } from "@solana/wallet-adapter-react"
 
 const error = Debug("error:token-upgrade-ui:token-upgrade")
 
@@ -42,6 +43,7 @@ export function TokenUpgradeBase({
   const { balance } = useTokenBalance(tokenAddress)
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
+  const { wallet } = useWallet()
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
@@ -110,9 +112,13 @@ export function TokenUpgradeBase({
 
   const error = useMemo(() => {
     if (balance?.decimals === -1)
-      return new Error("Wallet does not hold a token")
+      return new Error("Wallet does not hold the token")
     return undefined
   }, [balance])
+
+  const isInputDisabled = useMemo(() => {
+    return !wallet || !tokenAddress || Boolean(error)
+  }, [tokenAddress, error, wallet])
 
   return (
     <Form.Root
@@ -130,7 +136,7 @@ export function TokenUpgradeBase({
             <Amount
               address={tokenAddress}
               balance={balance?.uiAmountString}
-              disabled={!tokenAddress || Boolean(error)}
+              disabled={isInputDisabled}
               error={error}
               onAmountChange={onAmountChange}
               onAmountMaxChange={onAmountChange}
@@ -141,7 +147,10 @@ export function TokenUpgradeBase({
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="destination">
-            <Destination onDestinationChange={onDestinationChange} />
+            <Destination
+              disabled={isInputDisabled}
+              onDestinationChange={onDestinationChange}
+            />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"

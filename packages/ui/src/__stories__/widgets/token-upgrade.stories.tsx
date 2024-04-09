@@ -6,7 +6,7 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react"
 import { clusterApiUrl } from "@solana/web3.js"
-import { expect, fn, fireEvent, userEvent, within } from "@storybook/test"
+import { expect, fn, within } from "@storybook/test"
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { TokenUpgrade } from "../../widgets/token-upgrade"
@@ -64,11 +64,7 @@ export const Default: StoryObj<ComponentPropsWithTestId<typeof TokenUpgrade>> =
 
       await step("should toggle destination field", async () => {
         const cbx = ctx.getByLabelText("toggle-destination")
-        await expect(cbx).not.toBeDisabled()
-        await userEvent.click(cbx)
-        await expect(
-          ctx.getByRole("textbox", { description: "Destination" }),
-        ).toBeVisible()
+        await expect(cbx).toBeDisabled()
       })
     },
   }
@@ -82,11 +78,10 @@ export const WithTokenAddress: StoryObj<
   async play({ canvasElement, step }: any) {
     const ctx = within(canvasElement)
 
-    await step("should allow change amount", async () => {
+    await step("should not allow to change amount", async () => {
       const input = ctx.getByRole("spinbutton", { description: "Amount" })
 
-      await expect(input).not.toBeDisabled()
-      await fireEvent.change(input, { target: { value: "1" } })
+      await expect(input).toBeDisabled()
       await expect(ctx.getByLabelText("Select Wallet")).not.toBeDisabled()
     })
   },
