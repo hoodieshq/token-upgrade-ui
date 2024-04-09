@@ -24,7 +24,7 @@
     "lint": "pnpm run lint-pret && pnpm run lint-es",
     "lint-es": "eslint ./src",
     "lint-fix": "pnpm run lint-pret --w",
-    "lint-pret": "prettier ./src/** --check",
+    "lint-pret": "prettier ./src/** ./tests/** --check",
     "local:test-e2e": "anchor test",
     "local:sb": "pnpm run storybook --no-open --quiet --no-version-updates",
     "local:sb-kill": "kill -2 $(lsof -t -i:6006)",
