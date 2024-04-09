@@ -17,7 +17,7 @@ Use the button down here to launch it on [Vercel](https://vercel.com).
 Bear in mind it will require some configuration:
 
 - Set `NEXT_PUBLIC_TOKEN_UPGRADE_PROGRAM_ID` environment variable and provide the address of the deployed [`token-upgrade`](https://github.com/solana-labs/solana-program-library/tree/master/token-upgrade) program.
-- Set all [other env variables](/blob/main/packages/app/.env) to the proper values.
+- Set all [other env variables](/packages/app/.env) to the proper values.
 - The [root directory](https://vercel.com/docs/deployments/configure-a-build#root-directory) should lead to the `packages/app` directory.
 - `node@18.x`
 
