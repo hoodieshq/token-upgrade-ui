@@ -2,7 +2,6 @@ import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
 import Debug from "debug"
-import Destination from "./token-upgrade/destination"
 import React, { useCallback, useMemo } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
@@ -146,11 +145,8 @@ export function TokenUpgradeBase({
               value={uiAmount}
             />
           </Form.Field>
-          <Form.Field className="pb-4 pt-3.5" name="destination">
-            <Destination
-              disabled={isInputDisabled}
-              onDestinationChange={onDestinationChange}
-            />
+          <Form.Field className="pb-4 pt-3.5" name="tokenInfo">
+            Token Info
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"

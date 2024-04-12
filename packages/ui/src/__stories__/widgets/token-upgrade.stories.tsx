@@ -61,11 +61,6 @@ export const Default: StoryObj<ComponentPropsWithTestId<typeof TokenUpgrade>> =
           ctx.getByRole("spinbutton", { description: "Amount" }),
         ).toBeDisabled()
       })
-
-      await step("should toggle destination field", async () => {
-        const cbx = ctx.getByLabelText("toggle-destination")
-        await expect(cbx).toBeDisabled()
-      })
     },
   }
 
