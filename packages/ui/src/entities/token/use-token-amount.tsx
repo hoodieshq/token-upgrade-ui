@@ -2,7 +2,6 @@ import { useReducer } from "react"
 
 export type State = {
   uiAmount?: number
-  destination?: string
 }
 
 function useTokenAmount<S extends State>(state: S, action: any): State {
@@ -20,9 +19,6 @@ function useTokenAmount<S extends State>(state: S, action: any): State {
       }
 
       return nextState
-    }
-    case "changeDestination": {
-      return { ...state, destination: action.payload.destination }
     }
     case "clear": {
       return {}

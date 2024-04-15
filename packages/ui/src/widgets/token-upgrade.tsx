@@ -3,6 +3,7 @@ import * as Form from "@radix-ui/react-form"
 import Amount from "./token-upgrade/amount"
 import Debug from "debug"
 import React, { useCallback, useMemo } from "react"
+import TokenInfo from "./token-upgrade/token-info"
 import useTokenAmount from "../entities/token/use-token-amount"
 import { Container } from "./token-upgrade/container"
 import { twMerge } from "tailwind-merge"
@@ -38,7 +39,7 @@ export function TokenUpgradeBase({
   tokenExtAddress,
   tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
-  const [{ uiAmount, destination }, setAction] = useTokenAmount()
+  const [{ uiAmount }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
@@ -51,16 +52,6 @@ export function TokenUpgradeBase({
     [setAction],
   )
 
-  const onDestinationChange = useCallback(
-    (d: { value: string | undefined }) => {
-      setAction({
-        type: "changeDestination",
-        payload: { destination: d.value },
-      })
-    },
-    [setAction],
-  )
-
   const onTokenUpgrade = useCallback(async () => {
     onUpgradeStart?.()
 
@@ -68,7 +59,6 @@ export function TokenUpgradeBase({
       {
         amount: uiAmount,
         decimals: mint?.decimals,
-        destination,
         escrow,
         newAddress: tokenExtAddress,
         originalAddress: tokenAddress,
@@ -86,7 +76,6 @@ export function TokenUpgradeBase({
     )
   }, [
     uiAmount,
-    destination,
     escrow,
     mint,
     mutate,
@@ -146,7 +135,7 @@ export function TokenUpgradeBase({
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="tokenInfo">
-            Token Info
+            <TokenInfo />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"
