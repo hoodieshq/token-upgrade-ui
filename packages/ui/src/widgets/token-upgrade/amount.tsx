@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
+import { shortenAddress } from "./utils"
 import { twJoin } from "tailwind-merge"
 
 const inputVariants = cva(
@@ -55,7 +56,7 @@ interface AmountProps
   symbol?: string
 }
 
-export default function Amount({
+export function Amount({
   address,
   balance = "0",
   disabled,
@@ -114,15 +115,10 @@ export default function Amount({
     return variants
   }, [disabled, hasBalance, hasError, address])
 
-  const displaySymbol = useMemo(() => {
-    let s = symbol
-    if (!s && address && address.length > 3) {
-      s = `${address.slice(0, 3)}..${address.slice(-3)}`
-    } else if (!s && address && address?.length <= 3) {
-      s = address
-    }
-    return s
-  }, [address, symbol])
+  const displaySymbol = useMemo(
+    () => shortenAddress(address ?? "", symbol),
+    [address, symbol],
+  )
 
   return (
     <>
@@ -176,7 +172,11 @@ export default function Amount({
             />
           </Form.Control>
           {displaySymbol ? (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono">
+            <div
+              aria-description="Symbol of the token to upgrade"
+              aria-label="Token Symbol"
+              className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono"
+            >
               <span className="text-violet11 sm:text-sm">{displaySymbol}</span>
             </div>
           ) : null}

@@ -1,18 +1,18 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
-import Amount from "./token-upgrade/amount"
 import Debug from "debug"
 import React, { useCallback, useMemo } from "react"
 import TokenInfo from "./token-upgrade/token-info"
 import useTokenAmount from "../entities/token/use-token-amount"
+import { Amount } from "./token-upgrade/amount"
 import { Container } from "./token-upgrade/container"
 import { twMerge } from "tailwind-merge"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
-import { withErrorBoundary } from "react-error-boundary"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { withErrorBoundary } from "react-error-boundary"
 
 const error = Debug("error:token-upgrade-ui:token-upgrade")
 
@@ -135,7 +135,7 @@ export function TokenUpgradeBase({
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="tokenInfo">
-            <TokenInfo />
+            <TokenInfo address={tokenExtAddress} />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"

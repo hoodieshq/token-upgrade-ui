@@ -78,6 +78,9 @@ export const WithTokenAddress: StoryObj<
 
       await expect(input).toBeDisabled()
       await expect(ctx.getByLabelText("Select Wallet")).not.toBeDisabled()
+
+      const displaySymbol = ctx.getByLabelText("Token Symbol")
+      await expect(displaySymbol).toBeVisible()
     })
   },
 }
