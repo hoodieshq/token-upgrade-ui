@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { cva, VariantProps } from "class-variance-authority"
 import { TokenExtensions } from "./token-extensions"
 import { useTokenExtension } from "../../entities/token/use-token-extension"

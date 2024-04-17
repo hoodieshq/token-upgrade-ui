@@ -1,4 +1,4 @@
-import type { ParsedAccountData } from "@solana/web3.js"
+import type { ParsedAccountData as TParsedAccountData } from "@solana/web3.js"
 import {
   any,
   boolean,
@@ -11,7 +11,7 @@ import {
   type,
 } from "superstruct"
 
-const ParsedAccountData: Describe<ParsedAccountData> = object({
+const ParsedAccountData: Describe<TParsedAccountData> = object({
   program: string(),
   parsed: object(),
   space: number(),

@@ -1,7 +1,8 @@
-import React, { useMemo } from "react"
-import { Badge } from "./badge"
+import React, { Fragment, useMemo } from "react"
+import { Badge, variants, AccentVariant } from "./badge"
+import { getVariantByIndex, shortenAddress } from "./utils"
 import { TokenExtensionList } from "../../entities/token/use-token-extension"
-import { shortenAddress } from "./utils"
+import * as Popover from "@radix-ui/react-popover"
 
 interface TokenExtensionProps extends React.ComponentPropsWithoutRef<"div"> {
   address: string
@@ -9,27 +10,57 @@ interface TokenExtensionProps extends React.ComponentPropsWithoutRef<"div"> {
 }
 
 export function TokenExtensions({ address, extensions }: TokenExtensionProps) {
-  const displayAddress = useMemo(() => shortenAddress(address), [address])
+  const displayAddress = useMemo(
+    () => shortenAddress(address, undefined, 14),
+    [address],
+  )
 
   return (
     <div>
-      <h3 className="text-base font-semibold leading-6 text-gray-900">
-        Token has these extensions enabled
+      <h3 className="truncate text-ellipsis text-base font-semibold leading-6 text-gray-900">
+        You will receive the following token:
       </h3>
-      <dl className="mt-5 grid grid-cols-1 divide-y divide-gray-200 overflow-hidden rounded-lg border border-b bg-white md:grid-cols-3 md:divide-x md:divide-y-0">
+      <dl className="mt-2.5 grid grid-cols-1 divide-y divide-gray-200 overflow-hidden rounded-lg border border-b bg-white md:grid-cols-3 md:divide-x md:divide-y-0">
         <div className="px-4 py-5 sm:p-6">
           <dt className="text-base font-normal text-gray-900">
-            {displayAddress} extensions
+            <span className="font-mono">{displayAddress}</span>
           </dt>
-          {extensions?.length ?? 0 > 0 ? (
+          {(extensions?.length ?? 0) > 0 ? (
             <dd
               aria-description="List of extensions enabled for the token"
               aria-label="Enabled Extensions"
-              className="mt-1 flex items-baseline justify-between md:block lg:flex"
+              className="mt-1 flex flex-wrap gap-x-2 gap-y-1.5 items-baseline"
             >
-              {extensions?.map(({ extension }) => (
-                <Badge key={extension}>{extension}</Badge>
-              ))}
+              {extensions?.map(({ extension, state }, i) => {
+                return (
+                  <Fragment key={extension}>
+                    <Popover.Root>
+                      <Popover.Trigger asChild>
+                        <Badge
+                          aria-label="Token Extension"
+                          accent={
+                            getVariantByIndex(
+                              variants.accent,
+                              i,
+                            ) as AccentVariant
+                          }
+                          className="cursor-pointer"
+                        >
+                          {extension}
+                        </Badge>
+                      </Popover.Trigger>
+                      <Popover.Content
+                        className="w-[260px] rounded bg-white p-2 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] focus:shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2),0_0_0_2px_theme(colors.violet7)] data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade"
+                        sideOffset={5}
+                      >
+                        <div className="overflow-x-auto font-mono">
+                          {JSON.stringify(state)}
+                        </div>
+                      </Popover.Content>
+                    </Popover.Root>
+                  </Fragment>
+                )
+              })}
             </dd>
           ) : (
             <dd
