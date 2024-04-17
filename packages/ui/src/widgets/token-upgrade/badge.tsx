@@ -3,7 +3,7 @@ import { cva, VariantProps } from "class-variance-authority"
 import { twMerge } from "tailwind-merge"
 
 const badgeVariants = cva(
-  "gap-x-2.5 inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600",
+  "items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600",
   {
     variants: {
       accent: {
@@ -32,6 +32,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         className={twMerge(badgeVariants({ accent }), className)}
+        role="menuitem"
         {...props}
         ref={ref}
       >

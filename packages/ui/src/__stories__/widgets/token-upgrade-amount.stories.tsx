@@ -1,5 +1,5 @@
 import * as Form from "@radix-ui/react-form"
-import Amount from "../../widgets/token-upgrade/amount"
+import { Amount } from "../../widgets/token-upgrade/amount"
 import type { StoryFn, StoryObj } from "@storybook/react"
 import { expect, fn, userEvent, within } from "@storybook/test"
 

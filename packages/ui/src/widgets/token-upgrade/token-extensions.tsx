@@ -28,44 +28,47 @@ export function TokenExtensions({ address, extensions }: TokenExtensionProps) {
           {(extensions?.length ?? 0) > 0 ? (
             <dd
               aria-description="List of extensions enabled for the token"
-              aria-label="Enabled Extensions"
-              className="mt-1 flex flex-wrap gap-x-2 gap-y-1.5 items-baseline"
+              className="mt-1"
             >
-              {extensions?.map(({ extension, state }, i) => {
-                return (
-                  <Fragment key={extension}>
-                    <Popover.Root>
-                      <Popover.Trigger asChild>
-                        <Badge
-                          aria-label="Token Extension"
-                          accent={
-                            getVariantByIndex(
-                              variants.accent,
-                              i,
-                            ) as AccentVariant
-                          }
-                          className="cursor-pointer"
+              <div
+                className="flex flex-wrap items-baseline gap-x-2 gap-y-1.5"
+                role="menubar"
+              >
+                {extensions?.map(({ extension, state }, i) => {
+                  return (
+                    <Fragment key={extension}>
+                      <Popover.Root>
+                        <Popover.Trigger asChild>
+                          <Badge
+                            aria-label="Token Extension"
+                            accent={
+                              getVariantByIndex(
+                                variants.accent,
+                                i,
+                              ) as AccentVariant
+                            }
+                            className="cursor-pointer"
+                          >
+                            {extension}
+                          </Badge>
+                        </Popover.Trigger>
+                        <Popover.Content
+                          className="w-[260px] rounded bg-white p-2 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] focus:shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2),0_0_0_2px_theme(colors.violet7)] data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade"
+                          sideOffset={5}
                         >
-                          {extension}
-                        </Badge>
-                      </Popover.Trigger>
-                      <Popover.Content
-                        className="w-[260px] rounded bg-white p-2 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] focus:shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2),0_0_0_2px_theme(colors.violet7)] data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade"
-                        sideOffset={5}
-                      >
-                        <div className="overflow-x-auto font-mono">
-                          {JSON.stringify(state)}
-                        </div>
-                      </Popover.Content>
-                    </Popover.Root>
-                  </Fragment>
-                )
-              })}
+                          <div className="overflow-x-auto font-mono">
+                            {JSON.stringify(state)}
+                          </div>
+                        </Popover.Content>
+                      </Popover.Root>
+                    </Fragment>
+                  )
+                })}
+              </div>
             </dd>
           ) : (
             <dd
               aria-description="No enabled extensions for the token"
-              aria-label="No Extensions"
               className="mt-1 flex items-baseline justify-between md:block lg:flex"
             >
               There are no token extensions enabled.
