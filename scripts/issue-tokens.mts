@@ -86,12 +86,14 @@ async function issueTokens(
     lamports,
     programId: spl.TOKEN_2022_PROGRAM_ID,
   });
-  const initializePermanentDelegateInstruction =
-    spl.createInitializePermanentDelegateInstruction(
-      mint2022,
-      owner.publicKey,
-      spl.TOKEN_2022_PROGRAM_ID,
-    );
+  /*
+   *const initializePermanentDelegateInstruction =
+   *  spl.createInitializePermanentDelegateInstruction(
+   *    mint2022,
+   *    owner.publicKey,
+   *    spl.TOKEN_2022_PROGRAM_ID,
+   *  );
+   */
   const initializeMintInstruction = spl.createInitializeMintInstruction(
     mint2022,
     Number(decimals),
@@ -101,23 +103,18 @@ async function issueTokens(
   );
   const tx = new web3.Transaction().add(
     createAccountInstruction,
-    initializePermanentDelegateInstruction,
+    // initializePermanentDelegateInstruction,
     initializeMintInstruction,
   )
-  //tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
-  //tx.feePayer = owner.publicKey
-  //tx.partialSign(owner.payer)
-  //tx.sign(mint2022Keypair)
   await withSleep(
     sendAndConfirmTransaction(
       connection,
-      tx, 
+      tx,
       owner.publicKey,
       [owner.payer, mint2022Keypair]
     ),
     "Creating mint",
   );
-
   /*
    *const mint2022 = await withSleep(
    *  await spl.createMint(
