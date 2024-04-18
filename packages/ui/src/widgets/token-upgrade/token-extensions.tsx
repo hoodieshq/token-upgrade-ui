@@ -56,8 +56,8 @@ export function TokenExtensions({ address, extensions }: TokenExtensionProps) {
                           className="w-[260px] rounded bg-white p-2 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] focus:shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2),0_0_0_2px_theme(colors.violet7)] data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade"
                           sideOffset={5}
                         >
-                          <div className="overflow-x-auto font-mono">
-                            {JSON.stringify(state)}
+                          <div className="overflow-x-auto text-xs lg:text-sm">
+                            <pre>{JSON.stringify(state, null, 1)}</pre>
                           </div>
                         </Popover.Content>
                       </Popover.Root>
