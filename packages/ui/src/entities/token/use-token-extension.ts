@@ -54,7 +54,8 @@ export function useTokenExtension(
 
       const mintAccountInfo = create(parsedInfo.info, MintAccountInfo)
 
-      return mintAccountInfo.extensions
+      // Return empty list on absent extensions
+      return mintAccountInfo.extensions ?? []
     },
     queryKey: ["useTokenExtensionList", String(address)],
     refetchInterval: opts?.refetchInterval ?? 60_000,
