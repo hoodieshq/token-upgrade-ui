@@ -8,9 +8,11 @@ import { Warning } from "../../shared/warning"
 
 interface TokenInfoProps extends React.ComponentPropsWithoutRef<"div"> {
   address?: string
+  clusterMoniker: string
+  explorerUrl: string
 }
 
-export function TokenInfo({ address }: TokenInfoProps) {
+export function TokenInfo({ address, ...props }: TokenInfoProps) {
   const { extensions, error, isLoading } = useTokenExtension(address)
   const [err, setError] = useState<Error | null>(null)
 
@@ -19,18 +21,29 @@ export function TokenInfo({ address }: TokenInfoProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
-  return <TokenInfoBase address={address} error={err} extensions={extensions} />
+  return (
+    <TokenInfoBase
+      address={address}
+      error={err}
+      extensions={extensions}
+      {...props}
+    />
+  )
 }
 
 interface TokenInfoBaseProps extends TokenInfoProps {
   address?: string
+  clusterMoniker: string
   error: Error | null
+  explorerUrl: string
   extensions: TokenExtensionList
 }
 
 export function TokenInfoBase({
   address,
+  clusterMoniker,
   error,
+  explorerUrl,
   extensions,
 }: TokenInfoBaseProps) {
   return error ? (
@@ -38,7 +51,12 @@ export function TokenInfoBase({
   ) : extensions && address ? (
     <>
       <div className="py-2">
-        <TokenExtensions address={address} extensions={extensions} />
+        <TokenExtensions
+          address={address}
+          clusterMoniker={clusterMoniker}
+          explorerUrl={explorerUrl}
+          extensions={extensions}
+        />
       </div>
       <Warning message="There is no way to get your original token back after upgrade." />
     </>

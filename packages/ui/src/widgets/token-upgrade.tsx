@@ -11,14 +11,16 @@ import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
-import { useWallet } from "@solana/wallet-adapter-react"
+import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { withErrorBoundary } from "react-error-boundary"
+import { getCluster } from "../entities/transaction"
 
 const error = Debug("error:token-upgrade-ui:token-upgrade")
 
 export interface TokenUpgradeProps
   extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
   escrow?: string
+  explorerUrl: string
   onUpgradeEnd?: (a: { signature: string }) => void
   onUpgradeError?: (e: Error) => void
   onUpgradeStart?: () => void
@@ -31,6 +33,7 @@ export interface TokenUpgradeProps
 export function TokenUpgradeBase({
   className,
   escrow,
+  explorerUrl,
   onUpgradeEnd,
   onUpgradeError,
   onUpgradeStart,
@@ -41,9 +44,15 @@ export function TokenUpgradeBase({
 }: TokenUpgradeProps) {
   const [{ uiAmount }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
+  const { connection } = useConnection()
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
   const { wallet } = useWallet()
+
+  const clusterMoniker = useMemo(
+    () => getCluster(connection.rpcEndpoint),
+    [connection],
+  )
 
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
@@ -135,7 +144,11 @@ export function TokenUpgradeBase({
             />
           </Form.Field>
           <Form.Field className="pb-4 pt-3.5" name="tokenInfo">
-            <TokenInfo address={tokenExtAddress} />
+            <TokenInfo
+              address={tokenExtAddress}
+              clusterMoniker={clusterMoniker}
+              explorerUrl={explorerUrl}
+            />
           </Form.Field>
           <UpgradeButton
             className="pb-4 pt-3.5"
