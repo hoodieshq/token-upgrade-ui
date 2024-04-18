@@ -89,16 +89,16 @@ export function Amount({
   )
 
   const onValueMaxChange = useCallback(
-    (value: number) => {
-      if (inpRef.current) inpRef.current.value = String(value)
-      onAmountMaxChange?.({ amount: value })
+    (_e: React.ChangeEvent<HTMLInputElement>) => {
+      if (inpRef.current) inpRef.current.value = balance
+      onAmountMaxChange?.({ amount: Number(balance) })
     },
-    [onAmountMaxChange, inpRef],
+    [onAmountMaxChange, inpRef, balance],
   )
 
   useEffect(() => {
-    if (inpRef.current && inpRef.current.value !== String(value)) {
-      inpRef.current.value = String(value || "")
+    if (inpRef.current && value && inpRef.current.value !== String(value)) {
+      inpRef.current.value = String(value)
     }
   }, [value])
 
@@ -138,7 +138,7 @@ export function Amount({
         {hasBalance && (
           <button
             className="relative -mr-px inline-flex w-[37px] items-center gap-x-1.5 rounded-l-md px-1.5 py-0.5 text-xs font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 lg:text-sm"
-            onClick={() => onValueMaxChange?.(Number(balance))}
+            onClick={onValueMaxChange}
             role="button"
             type="button"
           >

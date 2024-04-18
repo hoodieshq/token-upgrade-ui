@@ -103,17 +103,24 @@ export const WithBalance: Story = {
     ...Default.args,
     address: "HoKw8CavcPjnd4QpFkvMyetz9bpQ9AqUJRjFqbjjnjqY",
     balance: "10",
+    value: "1",
   },
   async play({ canvasElement, step }: any) {
     const ctx = within(canvasElement)
+    const user = userEvent.setup()
 
     await step("should allow to change amount", async () => {
       const el = ctx.getByRole("button")
       await expect(el).toBeVisible()
-      await userEvent.click(el)
-      await expect(
-        ctx.getByRole("spinbutton", { description: "Amount" }),
-      ).toHaveValue(10)
+
+      /**
+       * Delay the click invocation allowing the effect to be applied.
+       * Effect is needed to set the value from the props
+       */
+      const input = ctx.getByRole("spinbutton", { description: "Amount" })
+      await new Promise((res) => setTimeout(res, 1_000))
+      await user.click(el)
+      await expect(input).toHaveValue(10)
     })
   },
 }
