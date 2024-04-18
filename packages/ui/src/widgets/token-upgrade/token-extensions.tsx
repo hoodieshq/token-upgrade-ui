@@ -19,7 +19,7 @@ export function TokenExtensions({
   extensions,
 }: TokenExtensionProps) {
   const displayAddress = useMemo(
-    () => shortenAddress(address, undefined, 14),
+    () => shortenAddress(address, undefined, 12),
     [address],
   )
 
