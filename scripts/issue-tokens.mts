@@ -76,7 +76,11 @@ async function issueTokens(
   const mint2022Keypair = web3.Keypair.generate();
   const mint2022 = mint2022Keypair.publicKey;
 
-  const mintLen = spl.getMintLen([spl.ExtensionType.PermanentDelegate]);
+  const mintLen = spl.getMintLen([
+    spl.ExtensionType.PermanentDelegate,
+    spl.ExtensionType.DefaultAccountState,
+    spl.ExtensionType.MetadataPointer,
+  ]);
   const lamports = await connection.getMinimumBalanceForRentExemption(mintLen);
 
   const createAccountInstruction = web3.SystemProgram.createAccount({
@@ -86,14 +90,21 @@ async function issueTokens(
     lamports,
     programId: spl.TOKEN_2022_PROGRAM_ID,
   });
-  /*
-   *const initializePermanentDelegateInstruction =
-   *  spl.createInitializePermanentDelegateInstruction(
-   *    mint2022,
-   *    owner.publicKey,
-   *    spl.TOKEN_2022_PROGRAM_ID,
-   *  );
-   */
+  const initializePermanentDelegateInstruction =
+    spl.createInitializePermanentDelegateInstruction(
+      mint2022,
+      owner.publicKey,
+      spl.TOKEN_2022_PROGRAM_ID,
+    );
+  const initializeDefaultAccountStateInstruction =
+    spl.createInitializeDefaultAccountStateInstruction(mint2022, 1);
+  const initializeMetadataPointerInstruction =
+    spl.createInitializeMetadataPointerInstruction(
+      mint2022,
+      owner.publicKey,
+      web3.Keypair.generate().publicKey,
+      spl.TOKEN_2022_PROGRAM_ID,
+    );
   const initializeMintInstruction = spl.createInitializeMintInstruction(
     mint2022,
     Number(decimals),
@@ -103,16 +114,16 @@ async function issueTokens(
   );
   const tx = new web3.Transaction().add(
     createAccountInstruction,
-    // initializePermanentDelegateInstruction,
+    initializePermanentDelegateInstruction,
+    initializeDefaultAccountStateInstruction,
+    initializeMetadataPointerInstruction,
     initializeMintInstruction,
-  )
+  );
   await withSleep(
-    sendAndConfirmTransaction(
-      connection,
-      tx,
-      owner.publicKey,
-      [owner.payer, mint2022Keypair]
-    ),
+    sendAndConfirmTransaction(connection, tx, owner.publicKey, [
+      owner.payer,
+      mint2022Keypair,
+    ]),
     "Creating mint",
   );
   /*
@@ -205,7 +216,7 @@ async function issueTokens(
 
   console.log(`Success. ${token.mint} is eligible for upgrade.`);
 
-  return `Use these variables: "NEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS=${mint}\r\nNEXT_PUBLIC_TARGET_TOKEN_ADDRESS=${mint2022}\r\nNEXT_PUBLIC_ESCROW_AUTHY_ADDRESS=${escrowAccount}"`;
+  return `Use these variables: \r\n======\r\nNEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS=${mint}\r\nNEXT_PUBLIC_TARGET_TOKEN_ADDRESS=${mint2022}\r\nNEXT_PUBLIC_ESCROW_AUTHY_ADDRESS=${escrowAccount}`;
 }
 
 issueTokens(holderAddress, tokenAmount, tokenDecimals).then(
