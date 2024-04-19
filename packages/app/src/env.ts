@@ -8,3 +8,5 @@ export const ORIGIN_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS
 export const TARGET_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TARGET_TOKEN_ADDRESS
 
 export const ESCROW_AUTHY_ADDRESS = process.env.NEXT_PUBLIC_ESCROW_AUTHY_ADDRESS
+
+export const EXPLORER_URL = "https://explorer.solana.com"

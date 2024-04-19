@@ -1,24 +1,26 @@
 import "../styles/tailwind.css"
 import * as Form from "@radix-ui/react-form"
-import Amount from "./token-upgrade/amount"
 import Debug from "debug"
-import Destination from "./token-upgrade/destination"
 import React, { useCallback, useMemo } from "react"
 import useTokenAmount from "../entities/token/use-token-amount"
+import { Amount } from "./token-upgrade/amount"
 import { Container } from "./token-upgrade/container"
+import { TokenInfo } from "./token-upgrade/token-info"
 import { twMerge } from "tailwind-merge"
 import { UpgradeButton } from "../features/upgrade-button"
 import { useMint } from "../entities/token/use-mint"
 import { useTokenBalance } from "../entities/token/use-token-balance"
 import { useTokenUpgrade } from "../entities/use-token-upgrade"
+import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { withErrorBoundary } from "react-error-boundary"
-import { useWallet } from "@solana/wallet-adapter-react"
+import { getCluster } from "../entities/transaction"
 
 const error = Debug("error:token-upgrade-ui:token-upgrade")
 
 export interface TokenUpgradeProps
   extends Pick<React.ComponentPropsWithoutRef<"div">, "className"> {
   escrow?: string
+  explorerUrl: string
   onUpgradeEnd?: (a: { signature: string }) => void
   onUpgradeError?: (e: Error) => void
   onUpgradeStart?: () => void
@@ -31,6 +33,7 @@ export interface TokenUpgradeProps
 export function TokenUpgradeBase({
   className,
   escrow,
+  explorerUrl,
   onUpgradeEnd,
   onUpgradeError,
   onUpgradeStart,
@@ -39,25 +42,21 @@ export function TokenUpgradeBase({
   tokenExtAddress,
   tokenUpgradeProgramId,
 }: TokenUpgradeProps) {
-  const [{ uiAmount, destination }, setAction] = useTokenAmount()
+  const [{ uiAmount }, setAction] = useTokenAmount()
   const { balance } = useTokenBalance(tokenAddress)
+  const { connection } = useConnection()
   const { mint } = useMint(tokenAddress)
   const { mutate } = useTokenUpgrade()
   const { wallet } = useWallet()
 
+  const clusterMoniker = useMemo(
+    () => getCluster(connection.rpcEndpoint),
+    [connection],
+  )
+
   const onAmountChange = useCallback(
     ({ amount }: { amount: number }) => {
       setAction({ type: "changeAmount", payload: { uiAmount: amount } })
-    },
-    [setAction],
-  )
-
-  const onDestinationChange = useCallback(
-    (d: { value: string | undefined }) => {
-      setAction({
-        type: "changeDestination",
-        payload: { destination: d.value },
-      })
     },
     [setAction],
   )
@@ -69,7 +68,6 @@ export function TokenUpgradeBase({
       {
         amount: uiAmount,
         decimals: mint?.decimals,
-        destination,
         escrow,
         newAddress: tokenExtAddress,
         originalAddress: tokenAddress,
@@ -87,7 +85,6 @@ export function TokenUpgradeBase({
     )
   }, [
     uiAmount,
-    destination,
     escrow,
     mint,
     mutate,
@@ -146,10 +143,11 @@ export function TokenUpgradeBase({
               value={uiAmount}
             />
           </Form.Field>
-          <Form.Field className="pb-4 pt-3.5" name="destination">
-            <Destination
-              disabled={isInputDisabled}
-              onDestinationChange={onDestinationChange}
+          <Form.Field className="pb-4 pt-3.5" name="tokenInfo">
+            <TokenInfo
+              address={tokenExtAddress}
+              clusterMoniker={clusterMoniker}
+              explorerUrl={explorerUrl}
             />
           </Form.Field>
           <UpgradeButton

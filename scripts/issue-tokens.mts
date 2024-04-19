@@ -2,12 +2,11 @@
 import * as web3 from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 import { homedir } from "node:os";
+import { keypairFromJSON, spawnSubcommandSync, withSleep } from "./utils.mjs";
 import {
-  keypairFromJSON,
-  spawnSubcommandSync,
-  withSleep,
-} from "./utils.mjs";
-import { sendAndConfirmTransaction, fromUiAmount } from "@solana/token-upgrade-ui"
+  sendAndConfirmTransaction,
+  fromUiAmount,
+} from "@solana/token-upgrade-ui";
 
 type Owner = {
   payer: web3.Keypair;
@@ -19,7 +18,8 @@ const CLUSTER_MONIKER = (process.env.CLUSTER_MONIKER ??
   "devnet") as web3.Cluster;
 const WALLET_ADDRESS =
   process.env.WALLET_ADDRESS ?? `${homedir()}/.config/solana/id.json`;
-const SOLANA_TOKEN_UPGRADE_CLI = process.env.SOLANA_TOKEN_UPGRADE_CLI ?? "spl-token-upgrade"
+const SOLANA_TOKEN_UPGRADE_CLI =
+  process.env.SOLANA_TOKEN_UPGRADE_CLI ?? "spl-token-upgrade";
 
 if (!WALLET_ADDRESS) throw new Error("Absent wallet");
 
@@ -30,9 +30,18 @@ const connection = new web3.Connection(
 
 const [_node, _script, holderAddress, tokenAmount, tokenDecimals] =
   process.argv;
-console.debug("Arguments:", { holderAddress, tokenAmount, tokenDecimals });
+console.debug("Arguments:", {
+  clusterUrl: connection.rpcEndpoint,
+  holderAddress,
+  tokenAmount,
+  tokenDecimals,
+});
 
-async function issueTokens(holderAddress: string, amount = "1", decimals = "9") {
+async function issueTokens(
+  holderAddress: string,
+  amount = "1",
+  decimals = "9",
+) {
   const payer = keypairFromJSON(WALLET_ADDRESS);
   const owner: Owner = {
     payer,
@@ -64,19 +73,74 @@ async function issueTokens(holderAddress: string, amount = "1", decimals = "9") 
   );
   console.log(`Token Account ${token.address} created`);
 
-  const mint2022 = await withSleep(
-    await spl.createMint(
-      connection,
-      owner.payer,
+  const mint2022Keypair = web3.Keypair.generate();
+  const mint2022 = mint2022Keypair.publicKey;
+
+  const mintLen = spl.getMintLen([
+    spl.ExtensionType.PermanentDelegate,
+    spl.ExtensionType.DefaultAccountState,
+    spl.ExtensionType.MetadataPointer,
+  ]);
+  const lamports = await connection.getMinimumBalanceForRentExemption(mintLen);
+
+  const createAccountInstruction = web3.SystemProgram.createAccount({
+    fromPubkey: owner.payer.publicKey,
+    newAccountPubkey: mint2022,
+    space: mintLen,
+    lamports,
+    programId: spl.TOKEN_2022_PROGRAM_ID,
+  });
+  const initializePermanentDelegateInstruction =
+    spl.createInitializePermanentDelegateInstruction(
+      mint2022,
       owner.publicKey,
-      owner.publicKey,
-      Number(decimals),
-      undefined,
-      undefined,
       spl.TOKEN_2022_PROGRAM_ID,
-    ),
+    );
+  const initializeDefaultAccountStateInstruction =
+    spl.createInitializeDefaultAccountStateInstruction(mint2022, 1);
+  const initializeMetadataPointerInstruction =
+    spl.createInitializeMetadataPointerInstruction(
+      mint2022,
+      owner.publicKey,
+      web3.Keypair.generate().publicKey,
+      spl.TOKEN_2022_PROGRAM_ID,
+    );
+  const initializeMintInstruction = spl.createInitializeMintInstruction(
+    mint2022,
+    Number(decimals),
+    owner.publicKey,
+    owner.publicKey,
+    spl.TOKEN_2022_PROGRAM_ID,
+  );
+  const tx = new web3.Transaction().add(
+    createAccountInstruction,
+    initializePermanentDelegateInstruction,
+    initializeDefaultAccountStateInstruction,
+    initializeMetadataPointerInstruction,
+    initializeMintInstruction,
+  );
+  await withSleep(
+    sendAndConfirmTransaction(connection, tx, owner.publicKey, [
+      owner.payer,
+      mint2022Keypair,
+    ]),
     "Creating mint",
   );
+  /*
+   *const mint2022 = await withSleep(
+   *  await spl.createMint(
+   *    connection,
+   *    owner.payer,
+   *    owner.publicKey,
+   *    owner.publicKey,
+   *    Number(decimals),
+   *    undefined,
+   *    undefined,
+   *    spl.TOKEN_2022_PROGRAM_ID,
+   *  ),
+   *  "Creating mint",
+   *);
+   */
   console.log(`Mint created: ${mint2022}`);
 
   const token2022 = await withSleep(
@@ -152,7 +216,7 @@ async function issueTokens(holderAddress: string, amount = "1", decimals = "9") 
 
   console.log(`Success. ${token.mint} is eligible for upgrade.`);
 
-  return `Use this query string for demonstration: "?token=${mint}&tokenExt=${mint2022}&escrow=${escrowAccount}"`;
+  return `Use these variables: \r\n======\r\nNEXT_PUBLIC_ORIGIN_TOKEN_ADDRESS=${mint}\r\nNEXT_PUBLIC_TARGET_TOKEN_ADDRESS=${mint2022}\r\nNEXT_PUBLIC_ESCROW_AUTHY_ADDRESS=${escrowAccount}`;
 }
 
 issueTokens(holderAddress, tokenAmount, tokenDecimals).then(

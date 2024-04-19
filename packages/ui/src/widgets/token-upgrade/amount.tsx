@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import * as Form from "@radix-ui/react-form"
 import { cva, VariantProps } from "class-variance-authority"
+import { shortenAddress } from "./utils"
 import { twJoin } from "tailwind-merge"
 
 const inputVariants = cva(
@@ -55,7 +56,7 @@ interface AmountProps
   symbol?: string
 }
 
-export default function Amount({
+export function Amount({
   address,
   balance = "0",
   disabled,
@@ -88,16 +89,16 @@ export default function Amount({
   )
 
   const onValueMaxChange = useCallback(
-    (value: number) => {
-      if (inpRef.current) inpRef.current.value = String(value)
-      onAmountMaxChange?.({ amount: value })
+    (_e: React.ChangeEvent<HTMLInputElement>) => {
+      if (inpRef.current) inpRef.current.value = balance
+      onAmountMaxChange?.({ amount: Number(balance) })
     },
-    [onAmountMaxChange, inpRef],
+    [onAmountMaxChange, inpRef, balance],
   )
 
   useEffect(() => {
-    if (inpRef.current && inpRef.current.value !== String(value)) {
-      inpRef.current.value = String(value || "")
+    if (inpRef.current && value && inpRef.current.value !== String(value)) {
+      inpRef.current.value = String(value)
     }
   }, [value])
 
@@ -114,15 +115,10 @@ export default function Amount({
     return variants
   }, [disabled, hasBalance, hasError, address])
 
-  const displaySymbol = useMemo(() => {
-    let s = symbol
-    if (!s && address && address.length > 3) {
-      s = `${address.slice(0, 3)}..${address.slice(-3)}`
-    } else if (!s && address && address?.length <= 3) {
-      s = address
-    }
-    return s
-  }, [address, symbol])
+  const displaySymbol = useMemo(
+    () => shortenAddress(address ?? "", symbol),
+    [address, symbol],
+  )
 
   return (
     <>
@@ -142,7 +138,7 @@ export default function Amount({
         {hasBalance && (
           <button
             className="relative -mr-px inline-flex w-[37px] items-center gap-x-1.5 rounded-l-md px-1.5 py-0.5 text-xs font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 lg:text-sm"
-            onClick={() => onValueMaxChange?.(Number(balance))}
+            onClick={onValueMaxChange}
             role="button"
             type="button"
           >
@@ -176,7 +172,11 @@ export default function Amount({
             />
           </Form.Control>
           {displaySymbol ? (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono">
+            <div
+              aria-description="Symbol of the token to upgrade"
+              aria-label="Token Symbol"
+              className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono"
+            >
               <span className="text-violet11 sm:text-sm">{displaySymbol}</span>
             </div>
           ) : null}

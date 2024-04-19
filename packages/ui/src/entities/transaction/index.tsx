@@ -31,3 +31,16 @@ export function fromUiAmount(uiAmount: number, decimals: number) {
 
   return Math.floor(result)
 }
+
+/**
+ *  Get cluster' moniker from connection
+ */
+export function getCluster(rpc: string) {
+  function getMoniker(s: string): web3.Cluster | "custom" {
+    if (s === web3.clusterApiUrl("devnet")) return "devnet"
+    if (s === web3.clusterApiUrl("mainnet-beta")) return "mainnet-beta"
+    if (s === web3.clusterApiUrl("testnet")) return "testnet"
+    return "custom"
+  }
+  return getMoniker(rpc)
+}

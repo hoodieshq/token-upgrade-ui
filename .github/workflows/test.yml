@@ -21,17 +21,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: install pnpm package manager
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: setup node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
@@ -39,7 +39,7 @@ jobs:
         run: pnpm config set store-dir $PNPM_CACHE_FOLDER
 
       - name: restore cache for packages if applicable
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: packages-cache
         with:
           path: "${{ env.PNPM_CACHE_FOLDER }}"
@@ -61,17 +61,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: install pnpm package manager
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: setup node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
@@ -79,7 +79,7 @@ jobs:
         run: pnpm config set store-dir $PNPM_CACHE_FOLDER
 
       - name: restore cache for packages if applicable
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: packages-cache
         with:
           path: "${{ env.PNPM_CACHE_FOLDER }}"
@@ -88,7 +88,7 @@ jobs:
             ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
       - name: restore playwright cache if applicable
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: playwright-cache
         with:
           path: "${{ env.PW_CACHE_FOLDER }}"

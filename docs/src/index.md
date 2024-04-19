@@ -58,16 +58,18 @@ Use this sample to integrate the component.
 ```typescript
 import { TokenUpgrade } from "@solana/token-upgrade-ui"
 
+const EXPLORER_URL = "https://explorer.solana.com"
 const OuterComponent = () => (
   <TokenUpgrade
     escrow={/* escrow address */}
+    explorerUrl={EXPLORER_URL}
     onUpgradeStart={() =>
       console.log({ message: "Upgrading token..." })
     }
     onUpgradeEnd={({ signature }) =>
       console.log({
         message: "Token upgraded",
-        link: `https://explorer.solana.com/tx/${signature}`,
+        link: EXPLORER_URL + `/tx/${signature}`,
       })
     }
     tokenAddress={/* token address to upgrade */}

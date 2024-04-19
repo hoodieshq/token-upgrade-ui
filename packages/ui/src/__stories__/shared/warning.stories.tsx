@@ -1,10 +1,10 @@
-import { Button } from "../../shared/button"
+import { Warning } from "../../shared/warning"
 import type { StoryObj } from "@storybook/react"
-import { expect, fn, userEvent, within } from "@storybook/test"
+import { expect, fn, within } from "@storybook/test"
 
 const headerStory = {
-  title: "UI/Shared/Button",
-  component: Button,
+  title: "UI/Shared/Warning",
+  component: Warning,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "padded",
@@ -14,23 +14,23 @@ const headerStory = {
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {},
   args: {
+    "data-testid": "warning",
     onClick: fn(),
   },
 }
 
 export default headerStory
 
-export const Default: StoryObj<typeof Button> = {
+export const Default: StoryObj<typeof Warning> = {
   args: {
-    children: "Button Text",
+    message: "Warning Text",
   },
   async play({ canvasElement, step }: any) {
     const ctx = within(canvasElement)
 
-    await step("should be clickable", async () => {
-      const btn = ctx.getByRole("button")
-      await expect(btn).not.toBeDisabled()
-      await userEvent.click(btn)
+    await step("should be rendered", async () => {
+      const el = ctx.getByRole("alert", { busy: false })
+      await expect(el).toBeVisible()
     })
   },
 }
