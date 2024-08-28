@@ -47,9 +47,7 @@ export function TokenExtensions({
             </a>
           </dt>
           {(extensions?.length ?? 0) > 0 ? (
-            <dd
-              className="mt-1"
-            >
+            <dd className="mt-1">
               <div
                 className="flex flex-wrap items-baseline gap-x-2 gap-y-1.5"
                 role="menubar"
@@ -87,9 +85,7 @@ export function TokenExtensions({
               </div>
             </dd>
           ) : (
-            <dd
-              className="mt-1 flex items-baseline justify-between md:block lg:flex"
-            >
+            <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
               There are no token extensions enabled.
             </dd>
           )}
