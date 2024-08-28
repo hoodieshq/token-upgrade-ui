@@ -48,7 +48,6 @@ export function TokenExtensions({
           </dt>
           {(extensions?.length ?? 0) > 0 ? (
             <dd
-              aria-description="List of extensions enabled for the token"
               className="mt-1"
             >
               <div
@@ -89,7 +88,6 @@ export function TokenExtensions({
             </dd>
           ) : (
             <dd
-              aria-description="No enabled extensions for the token"
               className="mt-1 flex items-baseline justify-between md:block lg:flex"
             >
               There are no token extensions enabled.

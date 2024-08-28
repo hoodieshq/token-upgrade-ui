@@ -173,7 +173,6 @@ export function Amount({
           </Form.Control>
           {displaySymbol ? (
             <div
-              aria-description="Symbol of the token to upgrade"
               aria-label="Token Symbol"
               className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 font-mono"
             >
