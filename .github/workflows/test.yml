@@ -48,7 +48,7 @@ jobs:
             ${{ runner.os }}-${{ env.PNPM_CACHE_AFFIX }}-
 
       - name: install dependencies
-        run: pnpm i --frozen-lockfile
+        run: pnpm i
 
       - name: testing
         run: |
@@ -98,7 +98,7 @@ jobs:
 
       - name: install dependencies
         run: |
-          pnpm install --frozen-lockfile
+          pnpm i
           pnpm exec playwright install --with-deps
 
       - name: build artefacts

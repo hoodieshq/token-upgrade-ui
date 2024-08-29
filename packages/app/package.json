@@ -21,7 +21,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "@solana/spl-token": "^0.4.1",
-    "@solana/token-upgrade-ui": "1.2.0",
+    "@solana/token-upgrade-ui": "workspace:^1.2.0",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
@@ -33,7 +33,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.0",
-    "token-upgrade-ui-shared": "1.0.0"
+    "token-upgrade-ui-shared": "workspace:^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
